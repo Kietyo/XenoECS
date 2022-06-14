@@ -16,12 +16,12 @@ internal class FamilyTest {
             )
         )
 
-        assertEquals(family.getEntities().size, 0)
+        assertEquals(family.getList().size, 0)
 
         val entity = world.addEntity {
             addOrReplaceComponent(TestComponent("test"))
         }
 
-        assertEquals(family.getEntities().size, 1)
+        assertEquals(family.getList().size, 1)
     }
 }

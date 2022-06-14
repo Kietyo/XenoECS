@@ -3,18 +3,23 @@ package com.xenotactic.ecs
 import kotlin.reflect.KClass
 
 data class FamilyConfiguration(
-    val allOfComponents: List<KClass<*>> = emptyList(),
-    val anyOfComponents: List<KClass<Any>> = emptyList(),
-    val noneOfComponents: List<KClass<Any>> = emptyList()
+    val allOfComponents: Set<KClass<*>> = emptySet(),
+    val anyOfComponents: Set<KClass<Any>> = emptySet(),
+    val noneOfComponents: Set<KClass<Any>> = emptySet()
 )
 
-data class Family(
+class Family(
     private var entities: ArrayList<Entity>
 ) {
-    fun getEntities() : List<Entity> = entities
+    fun getSequence() : Sequence<Entity> = entities.asSequence()
+    fun getList() : List<Entity> = entities
 
     internal fun addEntity(entity: Entity) {
         entities.add(entity)
+    }
+
+    companion object {
+        val EMPTY = Family(ArrayList())
     }
 }
 
