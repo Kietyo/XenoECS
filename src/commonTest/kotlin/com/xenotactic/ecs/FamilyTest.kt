@@ -12,7 +12,7 @@ internal class FamilyTest {
 
         val family = world.createFamily(
             FamilyConfiguration(
-                allOfComponents = listOf(TestComponent::class)
+                allOfComponents = setOf(TestComponent::class)
             )
         )
 
