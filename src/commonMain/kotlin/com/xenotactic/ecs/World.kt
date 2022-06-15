@@ -20,7 +20,7 @@ class World {
         return newEntity
     }
 
-    fun addFamily(familyConfiguration: FamilyConfiguration): Family {
+    fun createFamily(familyConfiguration: FamilyConfiguration): Family {
         return familyService.createFamily(familyConfiguration)
     }
 
@@ -31,7 +31,7 @@ class World {
     }
 
     fun update(deltaTime: Duration) {
-        systems.forEach { it.update(deltaTime) }
+        systems.forEach { if (it.isEnabled) { it.update(deltaTime) } }
     }
 
     inline fun <reified T> addComponentListener(listener: ComponentListener<T>) {

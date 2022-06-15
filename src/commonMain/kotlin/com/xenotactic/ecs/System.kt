@@ -3,7 +3,8 @@ package com.xenotactic.ecs
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
-abstract class System{
+abstract class System {
+    var isEnabled = true
     private var family: Family = Family.EMPTY
     internal fun setFamily(newFamily: Family) {
         family = newFamily

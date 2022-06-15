@@ -10,7 +10,7 @@ internal class FamilyTest {
     fun familyTest1() {
         val world = World()
 
-        val family = world.addFamily(
+        val family = world.createFamily(
             FamilyConfiguration(
                 allOfComponents = listOf(TestComponent::class)
             )

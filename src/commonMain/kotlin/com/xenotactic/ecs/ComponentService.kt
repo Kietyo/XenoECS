@@ -15,7 +15,7 @@ class ComponentService(
 
     inline fun <reified T> getComponentForEntityOrNull(entity: Entity): T? {
         val arr = componentTypeToArray[T::class] ?: return null
-        return arr.getComponentOrNull(entity) as T
+        return arr.getComponentOrNull(entity) as T?
     }
 
     fun containsComponentForEntity(kClass: KClass<*>, entity: Entity): Boolean {

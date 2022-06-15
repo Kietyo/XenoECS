@@ -27,8 +27,22 @@ class Entity(
         return componentService.getComponentForEntityOrNull<T>(this)
     }
 
-    inline fun containsComponent(klass: KClass<*>): Boolean {
+    inline fun <reified T> getComponentOrAdd(default: () -> T): T {
+        val component = componentService.getComponentForEntityOrNull<T>(this)
+        if (component == null) {
+            val newComponent = default()
+            addOrReplaceComponent(newComponent)
+            return newComponent
+        }
+        return component
+    }
+
+    private inline fun containsComponent(klass: KClass<*>): Boolean {
         return componentService.containsComponentForEntity(klass, this)
+    }
+
+    inline fun <reified T> containsComponent(): Boolean {
+        return componentService.containsComponentForEntity(T::class, this)
     }
 
     fun matchesFamilyConfiguration(familyConfiguration: FamilyConfiguration): Boolean {
