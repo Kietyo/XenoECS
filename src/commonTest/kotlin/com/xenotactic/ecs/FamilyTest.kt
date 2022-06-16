@@ -6,7 +6,7 @@ import kotlin.test.assertEquals
 internal class FamilyTest {
 
     @Test
-    fun familyTest1() {
+    fun createFamilyFirst_addingEntityAfterwardsUpdatesFamily() {
         val world = World()
 
         val family = world.createFamily(
@@ -64,5 +64,28 @@ internal class FamilyTest {
         }
 
         assertEquals(family.getList().size, 1)
+    }
+
+    @Test
+    fun familyWithOneComponent_removingComponentUpdatesFamily() {
+        val world = World()
+
+        val family = world.createFamily(
+            FamilyConfiguration(
+            allOfComponents = setOf(ObjectComponent::class)
+        )
+        )
+
+        val entity = world.addEntity {
+            addOrReplaceComponent(ObjectComponent)
+        }
+
+        assertEquals(family.getList().size, 1)
+
+        world.modifyEntity(entity) {
+            removeComponent<ObjectComponent>()
+        }
+
+        assertEquals(family.getList().size, 0)
     }
 }

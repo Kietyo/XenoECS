@@ -1,14 +1,38 @@
 package com.xenotactic.ecs
 
-class ComponentEntityContainer<T>() {
+import kotlin.reflect.KClass
+
+class ComponentEntityContainer<T>(
+    private val world: World
+) {
     private val entityIdToComponentMap: MutableMap<Int, T> = mutableMapOf()
     private val listeners = mutableListOf<ComponentListener<T>>()
 
-    fun addOrReplaceComponent(entity: Entity, component: T) {
-        entityIdToComponentMap[entity.id] = component
+    internal fun addOrReplaceComponentInternal(entity: Entity, component: T): T? {
+        val res = entityIdToComponentMap.put(entity.id, component)
         listeners.forEach {
             it.onAdd(entity, component)
         }
+        return res
+    }
+
+    fun getComponentOrAdd(entity: Entity, default: () -> T): T {
+        val comp = getComponentOrNull(entity)
+        if (comp != null) {
+            return comp
+        }
+        val newComp = default()
+        world.modifyEntity(entity) {
+            this.addOrReplaceComponent(newComp)
+        }
+        return newComp
+    }
+
+    fun getComponent(entity: Entity): T {
+        return entityIdToComponentMap[entity.id]
+            ?: throw ECSComponentNotFoundException {
+                "No component type found for entity: ${entity.id}"
+            }
     }
 
     fun getComponentOrNull(entity: Entity): T? {
@@ -16,7 +40,8 @@ class ComponentEntityContainer<T>() {
     }
 
     fun removeComponent(entity: Entity): T? {
-        val removedComponent = entityIdToComponentMap.remove(entity.id) ?: return null
+        val removedComponent = entityIdToComponentMap.remove(entity.id)
+            ?: return null
         listeners.forEach { it.onRemove(entity, removedComponent) }
         return removedComponent
     }

@@ -18,6 +18,10 @@ class Family(
         entities.add(entity)
     }
 
+    internal fun removeEntity(entity: Entity) {
+        entities.remove(entity)
+    }
+
     companion object {
         val EMPTY = Family(ArrayList())
     }
@@ -34,10 +38,12 @@ class FamilyService(
 
     val families = mutableMapOf<FamilyConfiguration, FamilyNode>()
 
-    fun updateFamiliesWithNewEntity(newEntity: Entity) {
+    fun updateFamiliesForEntity(entity: Entity) {
         for ((config, node) in families) {
-            if (newEntity.matchesFamilyConfiguration(config)) {
-                node.family.addEntity(newEntity)
+            if (entity.matchesFamilyConfiguration(config)) {
+                node.family.addEntity(entity)
+            } else {
+                node.family.removeEntity(entity)
             }
         }
     }

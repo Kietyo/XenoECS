@@ -25,18 +25,17 @@ class ComponentService(
 
     fun <T> addOrReplaceComponentForEntity(entity: Entity, component: T) {
         val container = componentTypeToArray.getOrPut(component!!::class) {
-            ComponentEntityContainer()
+            ComponentEntityContainer(world)
         }
-        container.addOrReplaceComponent(entity, component)
+        container.addOrReplaceComponentInternal(entity, component)
     }
 
     fun getOrPutContainer(klass: KClass<*>): ComponentEntityContainer<Any> {
         return componentTypeToArray.getOrPut(klass) {
-            ComponentEntityContainer()
+            ComponentEntityContainer(world)
         }
     }
 
-    // Returns true if the entity had the component, and the component was removed.
     inline fun <reified T> removeComponentForEntity(entity: Entity): T? {
         val container = componentTypeToArray[T::class] ?: return null
         return container.removeComponent(entity) as T

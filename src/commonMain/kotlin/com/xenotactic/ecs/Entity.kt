@@ -6,29 +6,27 @@ class Entity(
     val id: Int,
     val componentService: ComponentService
 ) {
-    private inline fun <T> addOrReplaceComponent(component: T) {
-        componentService.addOrReplaceComponentForEntity(this, component)
-    }
+//    inline fun <reified T> getComponent(): T {
+//        return componentService.getComponentForEntity<T>(this)
+//    }
+//
+//    inline fun <reified T> getComponentOrNull(): T? {
+//        return componentService.getComponentForEntityOrNull<T>(this)
+//    }
 
-    inline fun <reified T> getComponent(): T {
-        return componentService.getComponentForEntity<T>(this)
-    }
+//    inline fun <reified T> getComponentOrAdd(default: () -> T): T {
+//        val component = componentService.getComponentForEntityOrNull<T>(this)
+//        if (component == null) {
+//            val newComponent = default()
+//            world.modifyEntity(this@Entity) {
+//                addOrReplaceComponent(newComponent)
+//            }
+//            return newComponent
+//        }
+//        return component
+//    }
 
-    inline fun <reified T> getComponentOrNull(): T? {
-        return componentService.getComponentForEntityOrNull<T>(this)
-    }
-
-    private inline fun <reified T> getComponentOrAdd(default: () -> T): T {
-        val component = componentService.getComponentForEntityOrNull<T>(this)
-        if (component == null) {
-            val newComponent = default()
-            addOrReplaceComponent(newComponent)
-            return newComponent
-        }
-        return component
-    }
-
-    private inline fun containsComponent(klass: KClass<*>): Boolean {
+    private fun containsComponent(klass: KClass<*>): Boolean {
         return componentService.containsComponentForEntity(klass, this)
     }
 
