@@ -2,20 +2,11 @@ package com.xenotactic.ecs
 
 import kotlin.reflect.KClass
 
-class EntityBuilder(
-    private val entity: Entity,
-    private val componentService: ComponentService
-) {
-    fun <T> addOrReplaceComponent(component: T) {
-        componentService.addOrReplaceComponentForEntity(entity, component)
-    }
-}
-
 class Entity(
     val id: Int,
     val componentService: ComponentService
 ) {
-    inline fun <T> addOrReplaceComponent(component: T) {
+    private inline fun <T> addOrReplaceComponent(component: T) {
         componentService.addOrReplaceComponentForEntity(this, component)
     }
 
@@ -27,7 +18,7 @@ class Entity(
         return componentService.getComponentForEntityOrNull<T>(this)
     }
 
-    inline fun <reified T> getComponentOrAdd(default: () -> T): T {
+    private inline fun <reified T> getComponentOrAdd(default: () -> T): T {
         val component = componentService.getComponentForEntityOrNull<T>(this)
         if (component == null) {
             val newComponent = default()

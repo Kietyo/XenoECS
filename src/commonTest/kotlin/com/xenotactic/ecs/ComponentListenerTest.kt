@@ -81,7 +81,9 @@ internal class ComponentListenerTest {
 
         assertFalse(onAddTriggered)
 
-        entity.addOrReplaceComponent(TestComponent("test"))
+        world.modifyEntity(entity) {
+            addOrReplaceComponent(TestComponent("test"))
+        }
 
         assertTrue(onAddTriggered)
     }

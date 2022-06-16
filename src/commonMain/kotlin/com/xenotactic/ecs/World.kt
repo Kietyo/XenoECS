@@ -2,6 +2,8 @@ package com.xenotactic.ecs;
 
 import kotlin.time.Duration
 
+
+
 class World {
     private val entityIdService = EntityIdService()
     val componentService = ComponentService(this)
@@ -10,14 +12,24 @@ class World {
     internal val entities = arrayListOf<Entity>()
     private val systems = arrayListOf<System>()
 
-    fun addEntity(builder: EntityBuilder.() -> Unit = {}): Entity {
+    inner class ModifyEntityApi(val entity: Entity) {
+        fun <T> addOrReplaceComponent(component: T) {
+            componentService.addOrReplaceComponentForEntity(entity, component)
+        }
+    }
+
+    fun addEntity(builder: ModifyEntityApi.() -> Unit = {}): Entity {
         val id = entityIdService.getNewEntityId()
         val newEntity = Entity(id, componentService)
-        builder(EntityBuilder(newEntity, componentService))
         entities.add(newEntity)
-
-        familyService.updateFamiliesWithNewEntity(newEntity)
+        modifyEntity(newEntity, builder)
         return newEntity
+    }
+
+    fun modifyEntity(entity: Entity, builder: ModifyEntityApi.() -> Unit): Entity {
+        builder(ModifyEntityApi(entity))
+        familyService.updateFamiliesWithNewEntity(entity)
+        return entity
     }
 
     fun createFamily(familyConfiguration: FamilyConfiguration): Family {

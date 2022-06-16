@@ -24,7 +24,6 @@ class ComponentService(
     }
 
     fun <T> addOrReplaceComponentForEntity(entity: Entity, component: T) {
-        val klass = component!!::class
         val container = componentTypeToArray.getOrPut(component!!::class) {
             ComponentEntityContainer()
         }
