@@ -20,8 +20,8 @@ class World {
             componentService.addOrReplaceComponentForEntity(entity, component)
         }
 
-        inline fun <reified T> removeComponent() {
-            componentService.removeComponentForEntity<T>(entity)
+        inline fun <reified T> removeComponent() : T {
+            return componentService.removeComponentForEntity<T>(entity)
         }
 
         inline fun <reified T> getComponentOrAdd(default: () -> T): T {

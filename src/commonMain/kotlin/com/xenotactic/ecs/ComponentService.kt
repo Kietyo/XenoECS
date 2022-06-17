@@ -36,8 +36,11 @@ class ComponentService(
         }
     }
 
-    inline fun <reified T> removeComponentForEntity(entity: Entity): T? {
-        val container = componentTypeToArray[T::class] ?: return null
+    inline fun <reified T> removeComponentForEntity(entity: Entity): T {
+        val container = componentTypeToArray[T::class] ?:
+            throw ECSComponentNotFoundException {
+                "Component ${T::class} not found for entity: $entity"
+            }
         return container.removeComponent(entity) as T
     }
 
