@@ -5,6 +5,8 @@ import kotlin.time.Duration
 
 
 class World {
+    val injections = Injections()
+
     private val entityIdService = EntityIdService()
     val componentService = ComponentService(this)
     private val familyService = FamilyService(this)

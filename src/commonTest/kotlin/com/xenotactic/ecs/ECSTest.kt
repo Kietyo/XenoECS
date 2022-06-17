@@ -10,10 +10,12 @@ internal class ECSTest {
         val world = World()
         val component = TestComponent("test")
 
+        val testComponentContainer = world.getComponentContainer<TestComponent>()
+
         val entity = world.addEntity {
             addOrReplaceComponent(component)
         }
 
-        assertEquals(entity.getComponent(), component)
+        assertEquals(testComponentContainer.getComponent(entity), component)
     }
 }
