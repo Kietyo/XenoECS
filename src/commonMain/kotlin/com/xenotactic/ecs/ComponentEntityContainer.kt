@@ -2,14 +2,15 @@ package com.xenotactic.ecs
 
 import kotlin.reflect.KClass
 
-class ComponentEntityContainer<T>(
+class ComponentEntityContainer<T : Any>(
+    val klass: KClass<*>,
     private val world: World
 ) {
     private val entityIdToComponentMap: MutableMap<Int, T> = mutableMapOf()
     private val listeners = mutableListOf<ComponentListener<T>>()
 
-    internal fun addOrReplaceComponentInternal(entity: Entity, component: T): T? {
-        val res = entityIdToComponentMap.put(entity.id, component)
+    internal fun addOrReplaceComponentInternal(entity: Entity, component: Any): T? {
+        val res = entityIdToComponentMap.put(entity.id, component as T)
         listeners.forEach {
             it.onAdd(entity, component)
         }

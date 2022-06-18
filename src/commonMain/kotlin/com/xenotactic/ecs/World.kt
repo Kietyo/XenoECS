@@ -18,7 +18,7 @@ class World {
     val pendingModifications = mutableListOf<Pair<Entity, ModifyEntityApi.() -> Unit>>()
 
     inner class ModifyEntityApi(val entity: Entity) {
-        fun <T> addOrReplaceComponent(component: T) {
+        fun <T : Any> addOrReplaceComponent(component: T) {
             componentService.addOrReplaceComponentForEntity(entity, component)
         }
 
@@ -26,7 +26,7 @@ class World {
             return componentService.removeComponentForEntity<T>(entity)
         }
 
-        inline fun <reified T> getComponentOrAdd(default: () -> T): T {
+        inline fun <reified T : Any> getComponentOrAdd(default: () -> T): T {
             val component = componentService.getComponentForEntityOrNull<T>(entity)
             if (component == null) {
                 val newComponent = default()
@@ -71,11 +71,11 @@ class World {
         pendingModifications.forEach { modifyEntity(it.first, it.second) }
     }
 
-    inline fun <reified T> addComponentListener(listener: ComponentListener<T>) {
+    inline fun <reified T : Any> addComponentListener(listener: ComponentListener<T>) {
         componentService.addComponentListener(listener)
     }
 
-    inline fun <reified T> getComponentContainer(): ComponentEntityContainer<T> {
+    inline fun <reified T : Any> getComponentContainer(): ComponentEntityContainer<T> {
         return componentService.getOrPutContainer(T::class) as ComponentEntityContainer<T>
     }
 }

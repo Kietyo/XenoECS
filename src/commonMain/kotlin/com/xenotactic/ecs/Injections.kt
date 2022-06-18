@@ -15,7 +15,10 @@ class Injections {
     }
 
     inline fun <reified T: Any> getSingleton(): T {
-        return getSingletonOrNull<T>()!!
+        return getSingletonOrNull<T>() ?:
+            throw SingletonInjectionDoesNotExistException {
+                "Singleton injection does not exist: ${T::class}"
+            }
     }
 
     inline fun <reified T: Any> getSingletonOrNull(): T? {

@@ -5,7 +5,7 @@ import kotlin.reflect.KClass
 class ComponentService(
     val world: World
 ) {
-    val componentTypeToArray = mutableMapOf<KClass<out Any>, ComponentEntityContainer<Any>>()
+    val componentTypeToArray = mutableMapOf<KClass<out Any>, ComponentEntityContainer<*>>()
 
     inline fun <reified T> getComponentForEntity(entity: Entity): T {
         return getComponentForEntityOrNull(entity) ?: throw ECSComponentNotFoundException {
@@ -23,16 +23,16 @@ class ComponentService(
         return arr.containsComponent(entity)
     }
 
-    fun <T> addOrReplaceComponentForEntity(entity: Entity, component: T) {
+    fun <T : Any> addOrReplaceComponentForEntity(entity: Entity, component: T) {
         val container = componentTypeToArray.getOrPut(component!!::class) {
-            ComponentEntityContainer(world)
+            ComponentEntityContainer<T>(component!!::class, world)
         }
         container.addOrReplaceComponentInternal(entity, component)
     }
 
-    fun getOrPutContainer(klass: KClass<*>): ComponentEntityContainer<Any> {
+    fun getOrPutContainer(klass: KClass<*>): ComponentEntityContainer<*> {
         return componentTypeToArray.getOrPut(klass) {
-            ComponentEntityContainer(world)
+            ComponentEntityContainer<Any>(klass, world)
         }
     }
 
@@ -44,7 +44,7 @@ class ComponentService(
         return container.removeComponent(entity) as T
     }
 
-    inline fun <reified T> addComponentListener(listener: ComponentListener<T>) {
+    inline fun <reified T : Any> addComponentListener(listener: ComponentListener<T>) {
         val container = getOrPutContainer(T::class) as ComponentEntityContainer<T>
         container.addListener(listener)
     }

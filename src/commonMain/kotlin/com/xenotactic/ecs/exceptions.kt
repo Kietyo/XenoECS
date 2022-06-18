@@ -7,3 +7,4 @@ abstract class ECSException(
 class ECSComponentNotFoundException(messageFn: () -> String) : ECSException(messageFn)
 
 class SingletonInjectionAlreadyExistsException(messageFn: () -> String) : ECSException(messageFn)
+class SingletonInjectionDoesNotExistException(messageFn: () -> String) : ECSException(messageFn)
