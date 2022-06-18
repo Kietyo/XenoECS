@@ -8,7 +8,7 @@ data class FamilyConfiguration(
     val noneOfComponents: Set<KClass<Any>> = emptySet()
 )
 
-class Family(
+data class Family(
     private var entities: ArrayList<Entity>
 ) {
     fun getSequence() : Sequence<Entity> = entities.asSequence()

@@ -22,7 +22,11 @@ class World {
             componentService.addOrReplaceComponentForEntity(entity, component)
         }
 
-        inline fun <reified T> removeComponent() : T {
+        fun <T : Any> addIfNotExists(component: T) {
+            componentService.addIfNotExistsForEntity(entity, component)
+        }
+
+        inline fun <reified T> removeComponent() : T? {
             return componentService.removeComponentForEntity<T>(entity)
         }
 
