@@ -22,6 +22,10 @@ data class Family(
         entities.remove(entity)
     }
 
+    fun containsEntity(entity: Entity): Boolean {
+        return entities.contains(entity)
+    }
+
     companion object {
         val EMPTY = Family(ArrayList())
     }
@@ -41,7 +45,9 @@ class FamilyService(
     fun updateFamiliesForEntity(entity: Entity) {
         for ((config, node) in families) {
             if (entity.matchesFamilyConfiguration(config)) {
-                node.family.addEntity(entity)
+                if (!node.family.containsEntity(entity)) {
+                    node.family.addEntity(entity)
+                }
             } else {
                 node.family.removeEntity(entity)
             }
@@ -56,7 +62,7 @@ class FamilyService(
                         val entities = world.entities.filter {
                             it.matchesFamilyConfiguration(familyConfiguration)
                         }
-                        val arr = ArrayList<Entity>(entities.size)
+                        val arr = ArrayList<Entity>()
                         entities.forEach { arr.add(it) }
                         arr
                     }

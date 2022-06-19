@@ -88,4 +88,50 @@ internal class FamilyTest {
 
         assertEquals(family.getList().size, 0)
     }
+
+    @Test
+    fun replacingComponentForEntityShouldntChangeFamily() {
+        val world = World()
+
+        val family = world.createFamily(
+            FamilyConfiguration(
+            allOfComponents = setOf(ObjectComponent::class)
+        )
+        )
+
+        val entity = world.addEntity {
+            addOrReplaceComponent(ObjectComponent)
+        }
+
+        assertEquals(family.getList().size, 1)
+
+        world.modifyEntity(entity) {
+            addOrReplaceComponent(ObjectComponent)
+        }
+
+        assertEquals(family.getList().size, 1)
+    }
+
+    @Test
+    fun addIfNotExistsComponentForEntityShouldntChangeFamily() {
+        val world = World()
+
+        val family = world.createFamily(
+            FamilyConfiguration(
+                allOfComponents = setOf(ObjectComponent::class)
+            )
+        )
+
+        val entity = world.addEntity {
+            addOrReplaceComponent(ObjectComponent)
+        }
+
+        assertEquals(family.getList().size, 1)
+
+        world.modifyEntity(entity) {
+            addIfNotExists(ObjectComponent)
+        }
+
+        assertEquals(family.getList().size, 1)
+    }
 }
