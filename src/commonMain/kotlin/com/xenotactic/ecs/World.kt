@@ -26,6 +26,12 @@ class World {
             componentService.addIfNotExistsForEntity(entity, component)
         }
 
+        // Attempts to add the component to the entity.
+        // Throws an error if the entity already has the component.
+        fun <T : Any> addComponentOrThrow(component: T) {
+            componentService.addComponentOrThrow(entity, component)
+        }
+
         inline fun <reified T> removeComponent() : T? {
             return componentService.removeComponentForEntity<T>(entity)
         }
@@ -79,6 +85,7 @@ class World {
         componentService.addComponentListener(listener)
     }
 
+    @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Any> getComponentContainer(): ComponentEntityContainer<T> {
         return componentService.getOrPutContainer(T::class) as ComponentEntityContainer<T>
     }

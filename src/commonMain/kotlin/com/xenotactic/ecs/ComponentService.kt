@@ -54,5 +54,15 @@ class ComponentService(
         container.addListener(listener)
     }
 
+    fun <T: Any> addComponentOrThrow(entity: Entity, component: T) {
+        val container = getOrPutContainer(component::class)
+        if (container.containsComponent(entity)) {
+            throw ECSComponentAlreadyExistsException {
+                "Component $component already exists for entity: $entity"
+            }
+        } else {
+            container.addOrReplaceComponentInternal(entity, component)
+        }
+    }
 
 }
