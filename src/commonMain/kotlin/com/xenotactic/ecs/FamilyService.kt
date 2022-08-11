@@ -6,13 +6,18 @@ data class FamilyConfiguration(
     val allOfComponents: Set<KClass<*>> = emptySet(),
     val anyOfComponents: Set<KClass<Any>> = emptySet(),
     val noneOfComponents: Set<KClass<Any>> = emptySet()
-)
+) {
+    companion object {
+        val EMPTY = FamilyConfiguration()
+    }
+}
 
 data class Family(
+    private val familyConfiguration: FamilyConfiguration,
     private var entities: ArrayList<Entity>
 ) {
-    fun getSequence() : Sequence<Entity> = entities.asSequence()
-    fun getList() : List<Entity> = entities
+    fun getSequence(): Sequence<Entity> = entities.asSequence()
+    fun getList(): List<Entity> = entities
 
     internal fun addEntity(entity: Entity) {
         entities.add(entity)
@@ -27,49 +32,67 @@ data class Family(
     }
 
     companion object {
-        val EMPTY = Family(ArrayList())
+        val EMPTY = Family(FamilyConfiguration.EMPTY, ArrayList())
     }
 }
 
 data class FamilyNode(
-    var numInstances: Int,
-    val family: Family
+    val family: Family,
+    // Listeners for this family
+    val listeners: MutableList<FamilyListener> = mutableListOf()
 )
 
 class FamilyService(
     val world: World
 ) {
-
-    val families = mutableMapOf<FamilyConfiguration, FamilyNode>()
+    private val families = mutableMapOf<FamilyConfiguration, FamilyNode>()
 
     fun updateFamiliesForEntity(entity: Entity) {
         for ((config, node) in families) {
             if (entity.matchesFamilyConfiguration(config)) {
                 if (!node.family.containsEntity(entity)) {
                     node.family.addEntity(entity)
+                    for (listener in node.listeners) {
+                        listener.onAdd(entity)
+                    }
                 }
             } else {
                 node.family.removeEntity(entity)
+                for (listener in node.listeners) {
+                    listener.onRemove(entity)
+                }
             }
         }
     }
 
-    fun createFamily(familyConfiguration: FamilyConfiguration): Family {
-        val node = families.getOrPut(familyConfiguration) {
-            FamilyNode(0,
+    fun addListenerForFamilyConfiguration(
+        listener: FamilyListener
+    ) {
+        val node = createFamily(listener.familyConfiguration)
+        node.listeners.add(listener)
+        for (entity in node.family.getSequence()) {
+            listener.onExisting(entity)
+        }
+    }
+
+    fun createFamily(familyConfiguration: FamilyConfiguration): FamilyNode {
+        val node = getOrCreateFamilyNode(familyConfiguration)
+        world.entities.asSequence().filter {
+            it.matchesFamilyConfiguration(familyConfiguration)
+        }.forEach {
+            node.family.addEntity(it)
+        }
+        return node
+    }
+
+    private fun getOrCreateFamilyNode(familyConfiguration: FamilyConfiguration): FamilyNode {
+        return families.getOrPut(familyConfiguration) {
+            FamilyNode(
                 Family(
-                    kotlin.run {
-                        val entities = world.entities.filter {
-                            it.matchesFamilyConfiguration(familyConfiguration)
-                        }
-                        val arr = ArrayList<Entity>()
-                        entities.forEach { arr.add(it) }
-                        arr
-                    }
+                    familyConfiguration,
+                    ArrayList()
                 )
             )
         }
-        node.numInstances++
-        return node.family
     }
 }

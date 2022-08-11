@@ -65,12 +65,16 @@ class World {
     }
 
     fun createFamily(familyConfiguration: FamilyConfiguration): Family {
-        return familyService.createFamily(familyConfiguration)
+        return familyService.createFamily(familyConfiguration).family
+    }
+
+    fun addFamilyListener(listener: FamilyListener) {
+        familyService.addListenerForFamilyConfiguration(listener)
     }
 
     fun addSystem(familyConfiguration: FamilyConfiguration, system: System) {
-        val family = familyService.createFamily(familyConfiguration)
-        system.setFamily(family)
+        val familyNode = familyService.createFamily(familyConfiguration)
+        system.setFamily(familyNode.family)
         systems.add(system)
     }
 
