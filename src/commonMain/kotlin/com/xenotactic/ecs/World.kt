@@ -14,8 +14,8 @@ class World {
     internal val entities = arrayListOf<Entity>()
     private val systems = arrayListOf<System>()
 
-    var isUpdateInProgress = false
-    val pendingModifications = mutableListOf<Pair<Entity, ModifyEntityApi.() -> Unit>>()
+    private var isUpdateInProgress = false
+    private val pendingModifications = mutableListOf<Pair<Entity, ModifyEntityApi.() -> Unit>>()
 
     inner class ModifyEntityApi(val entity: Entity) {
         fun <T : Any> addOrReplaceComponent(component: T) {
