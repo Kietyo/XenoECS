@@ -69,7 +69,7 @@ class World {
     }
 
     fun addFamilyListener(listener: FamilyListener) {
-        familyService.addListenerForFamilyConfiguration(listener)
+        familyService.createFamilyIfNotExistsAndAddListener(listener)
     }
 
     fun addSystem(familyConfiguration: FamilyConfiguration, system: System) {

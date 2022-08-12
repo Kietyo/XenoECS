@@ -4,8 +4,8 @@ import kotlin.reflect.KClass
 
 data class FamilyConfiguration(
     val allOfComponents: Set<KClass<*>> = emptySet(),
-    val anyOfComponents: Set<KClass<Any>> = emptySet(),
-    val noneOfComponents: Set<KClass<Any>> = emptySet()
+    val anyOfComponents: Set<KClass<*>> = emptySet(),
+    val noneOfComponents: Set<KClass<*>> = emptySet()
 ) {
     companion object {
         val EMPTY = FamilyConfiguration()
@@ -65,7 +65,7 @@ class FamilyService(
         }
     }
 
-    fun addListenerForFamilyConfiguration(
+    fun createFamilyIfNotExistsAndAddListener(
         listener: FamilyListener
     ) {
         val node = createFamily(listener.familyConfiguration)
