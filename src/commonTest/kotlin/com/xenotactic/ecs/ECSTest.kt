@@ -78,4 +78,23 @@ internal class ECSTest {
             sealedClassContainer.getComponent(entity)
         }
     }
+
+    @Test
+    fun enumClass() {
+        val world = World()
+
+        val enumClassContainer = world.getComponentContainer<TestEnumClass>()
+
+        val entity = world.addEntity {
+            addComponentOrThrow(TestEnumClass.ENUM_1)
+        }
+
+        assertEquals(enumClassContainer.getComponent(entity), TestEnumClass.ENUM_1)
+
+        world.modifyEntity(entity) {
+            addComponentOrThrow(TestEnumClass.ENUM_2)
+        }
+
+        assertEquals(enumClassContainer.getComponent(entity), TestEnumClass.ENUM_2)
+    }
 }

@@ -15,3 +15,9 @@ sealed class TestSealedClass {
 
     object ObjectClassChild: TestSealedClass()
 }
+
+enum class TestEnumClass {
+    ENUM_1,
+    ENUM_2,
+    ENUM_3;
+}

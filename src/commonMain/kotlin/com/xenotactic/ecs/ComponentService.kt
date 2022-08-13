@@ -8,25 +8,28 @@ class ComponentService(
     val componentTypeToArray = mutableMapOf<KClass<out Any>, ComponentEntityContainer<*>>()
 
     inline fun <reified T> getComponentForEntity(entity: Entity): T {
-        return getComponentForEntityOrNull(entity) ?: throw ECSComponentNotFoundException {
-            "No component type ${T::class} found for entity: ${entity.id}"
-        }
+        return getComponentForEntityOrNull(entity)
+            ?: throw ECSComponentNotFoundException {
+                "No component type ${T::class} found for entity: ${entity.id}"
+            }
     }
 
     inline fun <reified T> getComponentForEntityOrNull(entity: Entity): T? {
-        val arr = componentTypeToArray[T::class] ?: return null
+        val arr = componentTypeToArray[T::class]
+            ?: return null
         return arr.getComponentOrNull(entity) as T?
     }
 
     fun containsComponentForEntity(kClass: KClass<*>, entity: Entity): Boolean {
-        val arr = componentTypeToArray[kClass] ?: return false
+        val arr = componentTypeToArray[kClass]
+            ?: return false
         return arr.containsComponent(entity)
     }
 
     fun <T : Any> addOrReplaceComponentForEntity(entity: Entity, component: T) {
-//        val container = componentTypeToArray.getOrPut(component!!::class) {
-//            ComponentEntityContainer<T>(component!!::class, world)
-//        }
+        //        val container = componentTypeToArray.getOrPut(component!!::class) {
+        //            ComponentEntityContainer<T>(component!!::class, world)
+        //        }
         val container = getOrPutContainer(component::class)
         container.addOrReplaceComponentInternal(entity, component)
     }
@@ -45,7 +48,8 @@ class ComponentService(
     }
 
     inline fun <reified T> removeComponentForEntity(entity: Entity): T? {
-        val container = componentTypeToArray[T::class] ?: return null
+        val container = componentTypeToArray[T::class]
+            ?: return null
         return container.removeComponent(entity) as T?
     }
 
@@ -54,11 +58,11 @@ class ComponentService(
         container.addListener(listener)
     }
 
-    fun <T: Any> addComponentOrThrow(entity: Entity, component: T) {
+    fun <T : Any> addComponentOrThrow(entity: Entity, component: T) {
         val container = getOrPutContainer(component::class)
         if (container.containsComponent(entity)) {
             throw ECSComponentAlreadyExistsException {
-                "Component $component already exists for entity: $entity"
+                "Class `${component::class}` of component `$component` already exists for entity: $entity"
             }
         } else {
             container.addOrReplaceComponentInternal(entity, component)
