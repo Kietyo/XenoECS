@@ -1,7 +1,7 @@
 plugins {
     kotlin("multiplatform")
     id("maven-publish")
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.2"
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.4"
     kotlin("plugin.allopen") version "1.6.0"
 }
 
@@ -42,7 +42,7 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -67,26 +67,30 @@ kotlin {
 benchmark {
     configurations {
         named("main") {
-//            iterations = 10
-//            iterationTime = 5
-//            iterationTimeUnit = "sec"
+            //            iterations = 10
+            //            iterationTime = 5
+            //            iterationTimeUnit = "sec"
             outputTimeUnit = "ms"
+            exclude("AllocationBenchmark")
         }
 //        main { // main configuration is created automatically, but you can change its defaults
+//            exclude("AllocationBenchmark")
 //            warmups = 20 // number of warmup iterations
 //            iterations = 10 // number of iterations
 //            iterationTime = 3 // time in seconds per iteration
 //        }
-//        smoke {
-//            warmups = 5 // number of warmup iterations
-//            iterations = 3 // number of iterations
-//            iterationTime = 500 // time in seconds per iteration
-//            iterationTimeUnit = "ms" // time unit for iterationTime, default is seconds
-//        }
+        ////        smoke {
+        ////            warmups = 5 // number of warmup iterations
+        ////            iterations = 3 // number of iterations
+        ////            iterationTime = 500 // time in seconds per iteration
+        ////            iterationTimeUnit = "ms" // time unit for iterationTime, default is seconds
+        ////        }
+//        this@benchmark.exclude("AllocationBenchmark")
+        //        exclude("AllocationBenchmark")
     }
     targets {
-        register("main")
+        //        register("main")
         register("jvm")
-        register("jsIr")
+        //        register("jsIr")
     }
 }
