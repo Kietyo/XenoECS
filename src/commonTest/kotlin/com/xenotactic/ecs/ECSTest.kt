@@ -91,10 +91,12 @@ internal class ECSTest {
 
         assertEquals(enumClassContainer.getComponent(entity), TestEnumClass.ENUM_1)
 
-        world.modifyEntity(entity) {
-            addComponentOrThrow(TestEnumClass.ENUM_2)
+        assertFailsWith<ECSComponentAlreadyExistsException> {
+            world.modifyEntity(entity) {
+                addComponentOrThrow(TestEnumClass.ENUM_2)
+            }
         }
 
-        assertEquals(enumClassContainer.getComponent(entity), TestEnumClass.ENUM_2)
+        assertEquals(enumClassContainer.getComponent(entity), TestEnumClass.ENUM_1)
     }
 }
