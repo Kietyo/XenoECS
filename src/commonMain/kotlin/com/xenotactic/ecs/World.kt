@@ -10,35 +10,39 @@ class World {
 
     private val entityIdService = EntityIdService()
     val componentService = ComponentService(this)
-    private val familyService = FamilyService(this)
+    private val familyService = FamilyService(this, componentService)
 
-    internal val entities = arrayListOf<Entity>()
+    internal val entities = arrayListOf<EntityId>()
     private val systems = arrayListOf<System>()
 
     private var isUpdateInProgress = false
-    private val pendingModifications = mutableListOf<Pair<Entity, ModifyEntityApi.() -> Unit>>()
+    private val pendingModifications = mutableListOf<Pair<EntityId, ModifyEntityApi.() -> Unit>>()
 
-    inner class ModifyEntityApi(val entity: Entity) {
+    inner class ModifyEntityApi(val entityId: EntityId) {
         fun <T : Any> addOrReplaceComponent(component: T) {
-            componentService.addOrReplaceComponentForEntity(entity, component)
+            componentService.addOrReplaceComponentForEntity(entityId, component)
         }
 
+        // Only adds the component to the entity if it doesn't exist.
+        // Notes:
+        // - If the component already exists, does nothing.
+        //      Will not activate any component listeners.
         fun <T : Any> addIfNotExists(component: T) {
-            componentService.addIfNotExistsForEntity(entity, component)
+            componentService.addIfNotExistsForEntity(entityId, component)
         }
 
         // Attempts to add the component to the entity.
         // Throws an error if the entity already has the component.
         fun <T : Any> addComponentOrThrow(component: T) {
-            componentService.addComponentOrThrow(entity, component)
+            componentService.addComponentOrThrow(entityId, component)
         }
 
         inline fun <reified T> removeComponent() : T? {
-            return componentService.removeComponentForEntity<T>(entity)
+            return componentService.removeComponentForEntity<T>(entityId)
         }
 
         inline fun <reified T : Any> getComponentOrAdd(default: () -> T): T {
-            val component = componentService.getComponentForEntityOrNull<T>(entity)
+            val component = componentService.getComponentForEntityOrNull<T>(entityId)
             if (component == null) {
                 val newComponent = default()
                 addOrReplaceComponent(newComponent)
@@ -48,21 +52,21 @@ class World {
         }
     }
 
-    fun addEntity(builder: ModifyEntityApi.() -> Unit = {}): Entity {
+    fun addEntity(builder: ModifyEntityApi.() -> Unit = {}): EntityId {
         val id = entityIdService.getNewEntityId()
-        val newEntity = Entity(id, componentService)
-        entities.add(newEntity)
-        modifyEntity(newEntity, builder)
-        return newEntity
+        val newEntityId = EntityId(id)
+        entities.add(newEntityId)
+        modifyEntity(newEntityId, builder)
+        return newEntityId
     }
 
-    fun modifyEntity(entity: Entity, builder: ModifyEntityApi.() -> Unit) {
+    fun modifyEntity(entityId: EntityId, builder: ModifyEntityApi.() -> Unit) {
         if (isUpdateInProgress) {
-            pendingModifications.add(entity to builder)
+            pendingModifications.add(entityId to builder)
             return
         }
-        builder(ModifyEntityApi(entity))
-        familyService.updateFamiliesForEntity(entity)
+        builder(ModifyEntityApi(entityId))
+        familyService.updateFamiliesForEntity(entityId)
     }
 
     fun createFamily(familyConfiguration: FamilyConfiguration): Family {

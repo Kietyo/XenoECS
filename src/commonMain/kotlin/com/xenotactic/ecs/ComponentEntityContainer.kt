@@ -6,52 +6,55 @@ class ComponentEntityContainer<T : Any>(
     val klass: KClass<*>,
     private val world: World
 ) {
-    private val entityIdToComponentMap: MutableMap<Int, T> = mutableMapOf()
+    private val entityIdToComponentMap: MutableMap<EntityId, T> = mutableMapOf()
     private val listeners = mutableListOf<ComponentListener<T>>()
 
-    internal fun addOrReplaceComponentInternal(entity: Entity, component: Any): T? {
-        val res = entityIdToComponentMap.put(entity.id, component as T)
+    internal fun addOrReplaceComponentInternal(entityId: EntityId, component: Any): T? {
+        val res = entityIdToComponentMap.put(entityId, component as T)
         listeners.forEach {
-            it.onAdd(entity, component)
+            it.onAdd(entityId, component)
         }
         return res
     }
 
-    fun getComponentOrAdd(entity: Entity, default: () -> T): T {
-        val comp = getComponentOrNull(entity)
+    fun getComponentOrAdd(entityId: EntityId, default: () -> T): T {
+        val comp = getComponentOrNull(entityId)
         if (comp != null) {
             return comp
         }
         val newComp = default()
-        world.modifyEntity(entity) {
+        world.modifyEntity(entityId) {
             this.addOrReplaceComponent(newComp)
         }
         return newComp
     }
 
-    fun getComponent(entity: Entity): T {
-        return entityIdToComponentMap[entity.id]
+    fun getComponent(entityId: EntityId): T {
+        return entityIdToComponentMap[entityId]
             ?: throw ECSComponentNotFoundException {
-                "Component for class ($klass), not found for entity: ${entity.id}"
+                "Component for class ($klass), not found for entity: ${entityId.id}"
             }
     }
 
-    fun getComponentOrNull(entity: Entity): T? {
-        return entityIdToComponentMap[entity.id]
+    fun getComponentOrNull(entityId: EntityId): T? {
+        return entityIdToComponentMap[entityId]
     }
 
-    fun removeComponent(entity: Entity): T? {
-        val removedComponent = entityIdToComponentMap.remove(entity.id)
+    fun removeComponent(entityId: EntityId): T? {
+        val removedComponent = entityIdToComponentMap.remove(entityId)
             ?: return null
-        listeners.forEach { it.onRemove(entity, removedComponent) }
+        listeners.forEach { it.onRemove(entityId, removedComponent) }
         return removedComponent
     }
 
-    fun containsComponent(entity: Entity): Boolean {
-        return entityIdToComponentMap.containsKey(entity.id)
+    fun containsComponent(entityId: EntityId): Boolean {
+        return entityIdToComponentMap.containsKey(entityId)
     }
 
     fun addListener(listener: ComponentListener<T>) {
         listeners.add(listener)
+        for ((entity, component) in entityIdToComponentMap) {
+            listener.onExisting(entity, component)
+        }
     }
 }

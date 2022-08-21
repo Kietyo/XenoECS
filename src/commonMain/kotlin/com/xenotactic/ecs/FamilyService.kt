@@ -14,21 +14,21 @@ data class FamilyConfiguration(
 
 data class Family(
     private val familyConfiguration: FamilyConfiguration,
-    private var entities: ArrayList<Entity>
+    private var entities: ArrayList<EntityId>
 ) {
-    fun getSequence(): Sequence<Entity> = entities.asSequence()
-    fun getList(): List<Entity> = entities
+    fun getSequence(): Sequence<EntityId> = entities.asSequence()
+    fun getList(): List<EntityId> = entities
 
-    internal fun addEntity(entity: Entity) {
-        entities.add(entity)
+    internal fun addEntity(entityId: EntityId) {
+        entities.add(entityId)
     }
 
-    internal fun removeEntity(entity: Entity) {
-        entities.remove(entity)
+    internal fun removeEntity(entityId: EntityId) {
+        entities.remove(entityId)
     }
 
-    fun containsEntity(entity: Entity): Boolean {
-        return entities.contains(entity)
+    fun containsEntity(entityId: EntityId): Boolean {
+        return entities.contains(entityId)
     }
 
     companion object {
@@ -43,25 +43,36 @@ data class FamilyNode(
 )
 
 class FamilyService(
-    val world: World
+    val world: World,
+    val componentService: ComponentService
 ) {
     private val families = mutableMapOf<FamilyConfiguration, FamilyNode>()
 
-    fun updateFamiliesForEntity(entity: Entity) {
+    fun updateFamiliesForEntity(entityId: EntityId) {
         for ((config, node) in families) {
-            if (entity.matchesFamilyConfiguration(config)) {
-                if (!node.family.containsEntity(entity)) {
-                    node.family.addEntity(entity)
+            if (matchesFamilyConfiguration(entityId, config)) {
+                if (!node.family.containsEntity(entityId)) {
+                    node.family.addEntity(entityId)
                     for (listener in node.listeners) {
-                        listener.onAdd(entity)
+                        listener.onAdd(entityId)
                     }
                 }
             } else {
-                node.family.removeEntity(entity)
+                node.family.removeEntity(entityId)
                 for (listener in node.listeners) {
-                    listener.onRemove(entity)
+                    listener.onRemove(entityId)
                 }
             }
+        }
+    }
+
+    fun matchesFamilyConfiguration(entityId: EntityId, familyConfiguration: FamilyConfiguration): Boolean {
+        return familyConfiguration.allOfComponents.all {
+            componentService.containsComponentForEntity(it, entityId)
+        } && (familyConfiguration.anyOfComponents.isEmpty() || familyConfiguration.anyOfComponents.any {
+            componentService.containsComponentForEntity(it, entityId)
+        }) && familyConfiguration.noneOfComponents.none {
+            componentService.containsComponentForEntity(it, entityId)
         }
     }
 
@@ -78,7 +89,7 @@ class FamilyService(
     fun createFamily(familyConfiguration: FamilyConfiguration): FamilyNode {
         val node = getOrCreateFamilyNode(familyConfiguration)
         world.entities.asSequence().filter {
-            it.matchesFamilyConfiguration(familyConfiguration)
+            matchesFamilyConfiguration(it, familyConfiguration)
         }.forEach {
             node.family.addEntity(it)
         }

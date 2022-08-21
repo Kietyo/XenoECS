@@ -15,17 +15,17 @@ internal class FamilyListenerTest {
         val addedComponentValues = mutableSetOf<String>()
         var numRemove = 0
 
-        override fun onAdd(entity: Entity) {
-            val component = testComponentContainer.getComponent(entity)
+        override fun onAdd(entityId: EntityId) {
+            val component = testComponentContainer.getComponent(entityId)
             addedComponentValues.add(component.value)
         }
 
-        override fun onRemove(entity: Entity) {
+        override fun onRemove(entityId: EntityId) {
             numRemove++
         }
 
-        override fun onExisting(entity: Entity) {
-            val component = testComponentContainer.getComponent(entity)
+        override fun onExisting(entityId: EntityId) {
+            val component = testComponentContainer.getComponent(entityId)
             existingComponentValues.add(component.value)
         }
     }

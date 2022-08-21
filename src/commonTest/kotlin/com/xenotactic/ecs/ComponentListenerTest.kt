@@ -17,12 +17,15 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entity: Entity, component: TestComponent) {
+            override fun onAdd(entityId: EntityId, component: TestComponent) {
                 onAddTriggered = true
             }
 
-            override fun onRemove(entity: Entity, component: TestComponent) {
+            override fun onRemove(entityId: EntityId, component: TestComponent) {
                 TODO("Not yet implemented")
+            }
+
+            override fun onExisting(entityId: EntityId, component: TestComponent) {
             }
 
         })
@@ -37,12 +40,16 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entity: Entity, component: TestComponent) {
+            override fun onAdd(entityId: EntityId, component: TestComponent) {
                 println("Added component!: $component")
                 onAddTriggered = true
             }
 
-            override fun onRemove(entity: Entity, component: TestComponent) {
+            override fun onRemove(entityId: EntityId, component: TestComponent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onExisting(entityId: EntityId, component: TestComponent) {
                 TODO("Not yet implemented")
             }
 
@@ -64,12 +71,16 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entity: Entity, component: TestComponent) {
+            override fun onAdd(entityId: EntityId, component: TestComponent) {
                 println("Added component!: $component")
                 onAddTriggered = true
             }
 
-            override fun onRemove(entity: Entity, component: TestComponent) {
+            override fun onRemove(entityId: EntityId, component: TestComponent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onExisting(entityId: EntityId, component: TestComponent) {
                 TODO("Not yet implemented")
             }
 
@@ -86,5 +97,69 @@ internal class ComponentListenerTest {
         }
 
         assertTrue(onAddTriggered)
+    }
+
+    @Test
+    fun addIfNotExistsForEntity_doesNotTriggerComponentListenerIfExists() {
+        val world = World()
+
+        val entity = world.addEntity() {
+            addOrReplaceComponent(TestComponent("test"))
+        }
+
+        var onAddTriggered = false
+
+        world.addComponentListener(object : ComponentListener<TestComponent> {
+            override fun onAdd(entityId: EntityId, component: TestComponent) {
+                println("Added component!: $component")
+                onAddTriggered = true
+            }
+
+            override fun onRemove(entityId: EntityId, component: TestComponent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onExisting(entityId: EntityId, component: TestComponent) {
+            }
+
+        })
+
+        assertFalse(onAddTriggered)
+
+        world.modifyEntity(entity) {
+            addIfNotExists(TestComponent("test"))
+        }
+
+        assertFalse(onAddTriggered)
+    }
+
+    @Test
+    fun triggersOnExistForComponentListener() {
+        val world = World()
+
+        val entity = world.addEntity() {
+            addOrReplaceComponent(TestComponent("test"))
+        }
+
+        var onExistingTriggered = false
+
+        world.addComponentListener(object : ComponentListener<TestComponent> {
+            override fun onAdd(entityId: EntityId, component: TestComponent) {
+                TODO()
+            }
+
+            override fun onRemove(entityId: EntityId, component: TestComponent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onExisting(entityId: EntityId, component: TestComponent) {
+                if (component.value == "test") {
+                    onExistingTriggered = true
+                }
+            }
+
+        })
+
+        assertTrue(onExistingTriggered)
     }
 }
