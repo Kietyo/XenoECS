@@ -19,6 +19,9 @@ data class Family(
     fun getSequence(): Sequence<EntityId> = entities.asSequence()
     fun getList(): List<EntityId> = entities
 
+    // Useful to avoid concurrent modifications
+    fun getNewList(): List<EntityId> = entities.toList()
+
     internal fun addEntity(entityId: EntityId) {
         entities.add(entityId)
     }
