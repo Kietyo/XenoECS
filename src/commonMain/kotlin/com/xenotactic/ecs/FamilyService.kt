@@ -22,7 +22,9 @@ data class Family(
     // Useful to avoid concurrent modifications
     fun getNewList(): List<EntityId> = entities.toList()
 
-    internal fun addEntity(entityId: EntityId) {
+    // Only adds the entity to the family if it doesn't yet exist.
+    // If the entity already exists, then we won't add it to this family again.
+    internal fun addEntityIfNotExists(entityId: EntityId) {
         entities.add(entityId)
     }
 
@@ -55,7 +57,7 @@ class FamilyService(
         for ((config, node) in families) {
             if (matchesFamilyConfiguration(entityId, config)) {
                 if (!node.family.containsEntity(entityId)) {
-                    node.family.addEntity(entityId)
+                    node.family.addEntityIfNotExists(entityId)
                     for (listener in node.listeners) {
                         listener.onAdd(entityId)
                     }
@@ -94,7 +96,7 @@ class FamilyService(
         world.entities.asSequence().filter {
             matchesFamilyConfiguration(it, familyConfiguration)
         }.forEach {
-            node.family.addEntity(it)
+            node.family.addEntityIfNotExists(it)
         }
         return node
     }

@@ -11,6 +11,7 @@ class ComponentEntityContainer<T : Any>(
 
     internal fun addOrReplaceComponentInternal(entityId: EntityId, component: Any): T? {
         val res = entityIdToComponentMap.put(entityId, component as T)
+        world.familyService.updateFamiliesForEntity(entityId)
         listeners.forEach {
             it.onAdd(entityId, component)
         }

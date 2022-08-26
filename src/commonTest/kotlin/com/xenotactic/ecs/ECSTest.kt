@@ -99,4 +99,54 @@ internal class ECSTest {
 
         assertEquals(enumClassContainer.getComponent(entity), TestEnumClass.ENUM_1)
     }
+
+    @Test
+    fun addIfNotExistsAddsToFamily() {
+        val world = World()
+        val objectComponentFamily = world.createFamily(
+            FamilyConfiguration(
+                setOf(ObjectComponent::class)
+            )
+        )
+
+        val newEntity = world.addEntity()
+
+        world.modifyEntity(newEntity) {
+            addIfNotExists(ObjectComponent)
+        }
+
+        assertEquals(objectComponentFamily.getList().size, 1)
+    }
+
+    @Test
+    fun addIfNotExistsAddsToFamilyWithListener() {
+        val world = World()
+        val objectComponentFamily = world.createFamily(
+            FamilyConfiguration(
+                setOf(ObjectComponent::class)
+            )
+        )
+        world.addComponentListener(object : ComponentListener<ObjectComponent> {
+            override fun onAdd(entityId: EntityId, component: ObjectComponent) {
+                assertEquals(objectComponentFamily.getList().size, 1)
+            }
+
+            override fun onRemove(entityId: EntityId, component: ObjectComponent) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onExisting(entityId: EntityId, component: ObjectComponent) {
+                TODO("Not yet implemented")
+            }
+
+        })
+
+        val newEntity = world.addEntity()
+
+        world.modifyEntity(newEntity) {
+            addIfNotExists(ObjectComponent)
+        }
+
+        assertEquals(objectComponentFamily.getList().size, 1)
+    }
 }

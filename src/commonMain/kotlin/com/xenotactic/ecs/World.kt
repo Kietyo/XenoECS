@@ -10,7 +10,7 @@ class World {
 
     private val entityIdService = EntityIdService()
     val componentService = ComponentService(this)
-    private val familyService = FamilyService(this, componentService)
+    internal val familyService = FamilyService(this, componentService)
 
     internal val entities = arrayListOf<EntityId>()
     private val systems = arrayListOf<System>()
