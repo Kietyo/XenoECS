@@ -149,4 +149,38 @@ internal class ECSTest {
 
         assertEquals(objectComponentFamily.getList().size, 1)
     }
+
+    @Test
+    fun removeEntity_removesFromFamilyBeforeReachingListener() {
+        val world = World()
+        val objectComponentFamily = world.createFamily(
+            FamilyConfiguration(
+                setOf(ObjectComponent::class)
+            )
+        )
+        val newEntity = world.addEntity()
+        world.modifyEntity(newEntity) {
+            addIfNotExists(ObjectComponent)
+        }
+
+        world.addComponentListener(object : ComponentListener<ObjectComponent> {
+            override fun onAdd(entityId: EntityId, component: ObjectComponent) {
+                TODO()
+            }
+
+            override fun onRemove(entityId: EntityId, component: ObjectComponent) {
+                assertEquals(objectComponentFamily.getList().size, 0)
+            }
+
+            override fun onExisting(entityId: EntityId, component: ObjectComponent) {
+            }
+
+        })
+
+        world.modifyEntity(newEntity) {
+            removeComponent<ObjectComponent>()
+        }
+
+        assertEquals(objectComponentFamily.getList().size, 0)
+    }
 }

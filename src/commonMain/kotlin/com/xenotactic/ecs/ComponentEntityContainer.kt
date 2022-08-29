@@ -44,6 +44,7 @@ class ComponentEntityContainer<T : Any>(
     fun removeComponent(entityId: EntityId): T? {
         val removedComponent = entityIdToComponentMap.remove(entityId)
             ?: return null
+        world.familyService.updateFamiliesForEntity(entityId)
         listeners.forEach { it.onRemove(entityId, removedComponent) }
         return removedComponent
     }

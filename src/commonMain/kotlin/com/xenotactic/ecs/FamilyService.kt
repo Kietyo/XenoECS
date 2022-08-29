@@ -57,15 +57,20 @@ class FamilyService(
         for ((config, node) in families) {
             if (matchesFamilyConfiguration(entityId, config)) {
                 if (!node.family.containsEntity(entityId)) {
+                    // Only add and call listeners if it didn't already exists in the family.
                     node.family.addEntityIfNotExists(entityId)
                     for (listener in node.listeners) {
                         listener.onAdd(entityId)
                     }
                 }
             } else {
-                node.family.removeEntity(entityId)
-                for (listener in node.listeners) {
-                    listener.onRemove(entityId)
+                if (node.family.containsEntity(entityId)) {
+                    // Only remove entity and call listeners if the entity was already a part
+                    // of the family.
+                    node.family.removeEntity(entityId)
+                    for (listener in node.listeners) {
+                        listener.onRemove(entityId)
+                    }
                 }
             }
         }
