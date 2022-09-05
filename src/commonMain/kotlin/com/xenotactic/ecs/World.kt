@@ -2,8 +2,6 @@ package com.xenotactic.ecs;
 
 import kotlin.time.Duration
 
-
-
 class World {
 
     var injections = Injections()
