@@ -6,6 +6,19 @@ class ComponentService(
     val world: World
 ) {
     val componentTypeToArray = mutableMapOf<KClass<out Any>, ComponentEntityContainer<*>>()
+    val entityIdToActiveComponentKlassSet = mutableMapOf<EntityId, MutableSet<KClass<out Any>>>()
+
+    /**
+     * Removes the entity by removing all components associated with the entity.
+     */
+    fun removeEntity(entityId: EntityId) {
+        val activeComponentKlasses = entityIdToActiveComponentKlassSet.getOrElse(entityId) {
+            emptySet()
+        }
+        for (activeComponentKlass in activeComponentKlasses) {
+            removeComponentForEntity<Any>(entityId, activeComponentKlass)
+        }
+    }
 
     inline fun <reified T> getComponentForEntity(entityId: EntityId): T {
         return getComponentForEntityOrNull(entityId)
@@ -27,17 +40,14 @@ class ComponentService(
     }
 
     fun <T : Any> addOrReplaceComponentForEntity(entityId: EntityId, component: T) {
-        //        val container = componentTypeToArray.getOrPut(component!!::class) {
-        //            ComponentEntityContainer<T>(component!!::class, world)
-        //        }
         val container = getOrPutContainer(component::class)
-        container.addOrReplaceComponentInternal(entityId, component)
+        addOrReplaceComponentInternal(container, entityId, component)
     }
 
     fun <T : Any> addIfNotExistsForEntity(entityId: EntityId, component: T) {
         val container = getOrPutContainer(component::class)
         if (!container.containsComponent(entityId)) {
-            container.addOrReplaceComponentInternal(entityId, component)
+            addOrReplaceComponentInternal(container, entityId, component)
         }
     }
 
@@ -48,8 +58,15 @@ class ComponentService(
     }
 
     inline fun <reified T> removeComponentForEntity(entityId: EntityId): T? {
-        val container = componentTypeToArray[T::class]
+        return removeComponentForEntity(entityId, T::class)
+    }
+
+    fun <T : Any> removeComponentForEntity(entityId: EntityId, componentKlass: KClass<*>): T? {
+        val container = componentTypeToArray[componentKlass]
             ?: return null
+        entityIdToActiveComponentKlassSet.getOrPut(entityId) {
+            mutableSetOf()
+        }.remove(componentKlass)
         return container.removeComponent(entityId) as T?
     }
 
@@ -58,6 +75,10 @@ class ComponentService(
         container.addListener(listener)
     }
 
+    /**
+     * Attempts to add the component to the entity.
+     * If the component already exists, then throws an ECSComponentAlreadyExistsException.
+     */
     fun <T : Any> addComponentOrThrow(entityId: EntityId, component: T) {
         val container = getOrPutContainer(component::class)
         if (container.containsComponent(entityId)) {
@@ -65,8 +86,19 @@ class ComponentService(
                 "Class `${component::class}` of component `$component` already exists for entity: $entityId"
             }
         } else {
-            container.addOrReplaceComponentInternal(entityId, component)
+            addOrReplaceComponentInternal(container, entityId, component)
         }
+    }
+
+    private fun <T : Any> addOrReplaceComponentInternal(
+        container: ComponentEntityContainer<*>,
+        entityId: EntityId,
+        component: T
+    ) {
+        container.addOrReplaceComponentInternal(entityId, component)
+        entityIdToActiveComponentKlassSet.getOrPut(entityId) {
+            mutableSetOf()
+        }.add(component::class)
     }
 
 }

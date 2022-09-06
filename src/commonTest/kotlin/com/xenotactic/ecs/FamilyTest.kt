@@ -9,7 +9,7 @@ internal class FamilyTest {
     fun createFamilyFirst_addingEntityAfterwardsUpdatesFamily() {
         val world = World()
 
-        val family = world.createFamily(
+        val family = world.getOrCreateFamily(
             FamilyConfiguration(
                 allOfComponents = setOf(TestComponent::class)
             )
@@ -27,7 +27,7 @@ internal class FamilyTest {
     @Test
     fun familyWithObject() {
         val world = World()
-        val family = world.createFamily(
+        val family = world.getOrCreateFamily(
             FamilyConfiguration(
                 allOfComponents = setOf(ObjectComponent::class)
             )
@@ -45,7 +45,7 @@ internal class FamilyTest {
     @Test
     fun familyWithObjectAndComponent() {
         val world = World()
-        val family = world.createFamily(
+        val family = world.getOrCreateFamily(
             FamilyConfiguration(
                 allOfComponents = setOf(TestComponent::class, ObjectComponent::class)
             )
@@ -70,7 +70,7 @@ internal class FamilyTest {
     fun familyWithOneComponent_removingComponentUpdatesFamily() {
         val world = World()
 
-        val family = world.createFamily(
+        val family = world.getOrCreateFamily(
             FamilyConfiguration(
             allOfComponents = setOf(ObjectComponent::class)
         )
@@ -93,7 +93,7 @@ internal class FamilyTest {
     fun replacingComponentForEntityShouldntChangeFamily() {
         val world = World()
 
-        val family = world.createFamily(
+        val family = world.getOrCreateFamily(
             FamilyConfiguration(
             allOfComponents = setOf(ObjectComponent::class)
         )
@@ -116,7 +116,7 @@ internal class FamilyTest {
     fun addIfNotExistsComponentForEntityShouldntChangeFamily() {
         val world = World()
 
-        val family = world.createFamily(
+        val family = world.getOrCreateFamily(
             FamilyConfiguration(
                 allOfComponents = setOf(ObjectComponent::class)
             )

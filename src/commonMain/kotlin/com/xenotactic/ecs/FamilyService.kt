@@ -13,7 +13,7 @@ data class FamilyConfiguration(
 }
 
 data class Family(
-    private val familyConfiguration: FamilyConfiguration,
+    internal val familyConfiguration: FamilyConfiguration,
     private var entities: ArrayList<EntityId>
 ) {
     fun getSequence(): Sequence<EntityId> = entities.asSequence()
@@ -89,14 +89,14 @@ class FamilyService(
     fun createFamilyIfNotExistsAndAddListener(
         listener: FamilyListener
     ) {
-        val node = createFamily(listener.familyConfiguration)
+        val node = getOrCreateFamily(listener.familyConfiguration)
         node.listeners.add(listener)
         for (entity in node.family.getSequence()) {
             listener.onExisting(entity)
         }
     }
 
-    fun createFamily(familyConfiguration: FamilyConfiguration): FamilyNode {
+    fun getOrCreateFamily(familyConfiguration: FamilyConfiguration): FamilyNode {
         val node = getOrCreateFamilyNode(familyConfiguration)
         world.entities.asSequence().filter {
             matchesFamilyConfiguration(it, familyConfiguration)

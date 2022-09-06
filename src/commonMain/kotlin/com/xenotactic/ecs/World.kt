@@ -16,6 +16,8 @@ class World {
     private var isUpdateInProgress = false
     private val pendingModifications = mutableListOf<Pair<EntityId, ModifyEntityApi.() -> Unit>>()
 
+    val numEntities get() = entities.size
+
     inner class ModifyEntityApi(val entityId: EntityId) {
         fun <T : Any> addOrReplaceComponent(component: T) {
             componentService.addOrReplaceComponentForEntity(entityId, component)
@@ -50,6 +52,10 @@ class World {
         }
     }
 
+    fun containsEntity(entityId: EntityId): Boolean {
+        return entities.contains(entityId)
+    }
+
     fun addEntity(builder: ModifyEntityApi.() -> Unit = {}): EntityId {
         val id = entityIdService.getNewEntityId()
         val newEntityId = EntityId(id)
@@ -67,8 +73,17 @@ class World {
         familyService.updateFamiliesForEntity(entityId)
     }
 
-    fun createFamily(familyConfiguration: FamilyConfiguration): Family {
-        return familyService.createFamily(familyConfiguration).family
+    fun removeEntity(entityId: EntityId) {
+        componentService.removeEntity(entityId)
+        entities.remove(entityId)
+    }
+
+    /**
+     * Gets the family corresponding to the configuration if exists.
+     * If not, then creates and returns a new family.
+     */
+    fun getOrCreateFamily(familyConfiguration: FamilyConfiguration): Family {
+        return familyService.getOrCreateFamily(familyConfiguration).family
     }
 
     fun addFamilyListener(listener: FamilyListener) {
@@ -76,7 +91,13 @@ class World {
     }
 
     fun addSystem(familyConfiguration: FamilyConfiguration, system: System) {
-        val familyNode = familyService.createFamily(familyConfiguration)
+        val familyNode = familyService.getOrCreateFamily(familyConfiguration)
+        system.setFamily(familyNode.family)
+        systems.add(system)
+    }
+
+    fun addSystem(system: System) {
+        val familyNode = familyService.getOrCreateFamily(system.familyConfiguration)
         system.setFamily(familyNode.family)
         systems.add(system)
     }

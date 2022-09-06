@@ -1,8 +1,6 @@
 package com.xenotactic.ecs
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
+import kotlin.test.*
 
 internal class ECSTest {
 
@@ -103,7 +101,7 @@ internal class ECSTest {
     @Test
     fun addIfNotExistsAddsToFamily() {
         val world = World()
-        val objectComponentFamily = world.createFamily(
+        val objectComponentFamily = world.getOrCreateFamily(
             FamilyConfiguration(
                 setOf(ObjectComponent::class)
             )
@@ -121,7 +119,7 @@ internal class ECSTest {
     @Test
     fun addIfNotExistsAddsToFamilyWithListener() {
         val world = World()
-        val objectComponentFamily = world.createFamily(
+        val objectComponentFamily = world.getOrCreateFamily(
             FamilyConfiguration(
                 setOf(ObjectComponent::class)
             )
@@ -151,9 +149,9 @@ internal class ECSTest {
     }
 
     @Test
-    fun removeEntity_removesFromFamilyBeforeReachingListener() {
+    fun removeComponentFromEntity_removesFromFamilyBeforeReachingListener() {
         val world = World()
-        val objectComponentFamily = world.createFamily(
+        val objectComponentFamily = world.getOrCreateFamily(
             FamilyConfiguration(
                 setOf(ObjectComponent::class)
             )
@@ -182,5 +180,60 @@ internal class ECSTest {
         }
 
         assertEquals(objectComponentFamily.getList().size, 0)
+    }
+
+    @Test
+    fun removeEntityFromWorld() {
+        val world = World()
+
+        val entity = world.addEntity()
+
+        assertTrue(world.containsEntity(entity))
+
+        world.removeEntity(entity)
+
+        assertFalse(world.containsEntity(entity))
+    }
+
+    @Test
+    fun removeEntityWithComponentsFromWorld() {
+        val world = World()
+
+        var onAddCalled = false
+        var onRemoveCalled = false
+        var onExistingCalled = false
+
+        world.addComponentListener(object : ComponentListener<TestComponent> {
+            override fun onAdd(entityId: EntityId, component: TestComponent) {
+                onAddCalled = true
+            }
+
+            override fun onRemove(entityId: EntityId, component: TestComponent) {
+                onRemoveCalled = true
+            }
+
+            override fun onExisting(entityId: EntityId, component: TestComponent) {
+                onExistingCalled = true
+            }
+
+        })
+
+        val testComponentContainer = world.getComponentContainer<TestComponent>()
+
+        val entity = world.addEntity {
+            addComponentOrThrow(TestComponent("blah"))
+        }
+
+        assertTrue(onAddCalled)
+        assertFalse(onRemoveCalled)
+        assertFalse(onExistingCalled)
+        assertTrue(world.containsEntity(entity))
+        assertTrue(testComponentContainer.containsComponent(entity))
+
+        world.removeEntity(entity)
+
+        assertTrue(onRemoveCalled)
+        assertFalse(world.containsEntity(entity))
+        assertFalse(testComponentContainer.containsComponent(entity))
     }
 }
