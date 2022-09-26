@@ -5,7 +5,10 @@ import kotlin.reflect.KClass
 class Injections {
     val singletonComponents = mutableMapOf<KClass<*>, Any>()
 
-    fun <T: Any> setSingleton(obj: T) {
+    /**
+     * Sets singleton or throws a SingletonInjectionAlreadyExistsException if it already exists.
+     */
+    fun <T: Any> setSingletonOrThrow(obj: T) {
         if (singletonComponents.containsKey(obj::class)) {
             throw SingletonInjectionAlreadyExistsException {
                 "Singleton injection already exists: ${obj::class}"
