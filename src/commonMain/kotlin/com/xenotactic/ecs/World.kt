@@ -114,7 +114,6 @@ class World {
         componentService.addComponentListener(listener)
     }
 
-    @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Any> getComponentContainer(): ComponentEntityContainer<T> {
         return getComponentContainer(T::class)
     }
