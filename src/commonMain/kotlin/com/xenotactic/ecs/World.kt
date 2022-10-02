@@ -1,5 +1,6 @@
 package com.xenotactic.ecs;
 
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 class World {
@@ -115,6 +116,15 @@ class World {
 
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : Any> getComponentContainer(): ComponentEntityContainer<T> {
-        return componentService.getOrPutContainer(T::class) as ComponentEntityContainer<T>
+        return getComponentContainer(T::class)
     }
+
+    fun <T : Any> getComponentContainer(kClass: KClass<T>): ComponentEntityContainer<T> {
+        return componentService.getOrPutContainer(kClass) as ComponentEntityContainer<T>
+    }
+
+    operator fun <T : Any> get(entityId: EntityId, kClass: KClass<T>): T {
+        return getComponentContainer(kClass).getComponent(entityId)
+    }
+
 }
