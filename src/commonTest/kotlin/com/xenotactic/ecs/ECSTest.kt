@@ -1,6 +1,8 @@
 package com.xenotactic.ecs
 
 import kotlin.test.*
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 internal class ECSTest {
 
@@ -235,5 +237,35 @@ internal class ECSTest {
         assertTrue(onRemoveCalled)
         assertFalse(world.containsEntity(entity))
         assertFalse(testComponentContainer.containsComponent(entity))
+    }
+
+    @Test
+    fun removeEntityWhenWorldContainsMultipleEntities() {
+        val world = World().also { world ->
+            world.addSystem(object : System() {
+                override val familyConfiguration: FamilyConfiguration
+                    = FamilyConfiguration(allOfComponents = setOf(TestComponent::class))
+
+                override fun update(deltaTime: Duration) {
+                    getFamily().getNewList().forEach {
+                        world.removeEntity(it)
+                    }
+                }
+
+            })
+        }
+
+        val e1 = world.addEntity() {
+            addComponentOrThrow(TestComponent("entity1"))
+            addComponentOrThrow(ObjectComponent)
+        }
+        val e2 = world.addEntity() {
+            addComponentOrThrow(TestComponent("entity2"))
+            addComponentOrThrow(ObjectComponent)
+        }
+
+        world.update(1.seconds)
+
+        assertEquals(world.numEntities, 0)
     }
 }

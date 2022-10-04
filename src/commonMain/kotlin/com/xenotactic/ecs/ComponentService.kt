@@ -5,16 +5,16 @@ import kotlin.reflect.KClass
 class ComponentService(
     val world: World
 ) {
-    val componentTypeToArray = mutableMapOf<KClass<out Any>, ComponentEntityContainer<*>>()
-    val entityIdToActiveComponentKlassSet = mutableMapOf<EntityId, MutableSet<KClass<out Any>>>()
+    val componentTypeToContainerMap = mutableMapOf<KClass<out Any>, ComponentEntityContainer<*>>()
+    private val entityIdToActiveComponentKlassSetMap = mutableMapOf<EntityId, MutableSet<KClass<out Any>>>()
 
     /**
      * Removes the entity by removing all components associated with the entity.
      */
     fun removeEntity(entityId: EntityId) {
-        val activeComponentKlasses = entityIdToActiveComponentKlassSet.getOrElse(entityId) {
+        val activeComponentKlasses = entityIdToActiveComponentKlassSetMap.getOrElse(entityId) {
             emptySet()
-        }
+        }.toSet()
         for (activeComponentKlass in activeComponentKlasses) {
             removeComponentForEntity<Any>(entityId, activeComponentKlass)
         }
@@ -28,13 +28,13 @@ class ComponentService(
     }
 
     inline fun <reified T> getComponentForEntityOrNull(entityId: EntityId): T? {
-        val arr = componentTypeToArray[T::class]
+        val arr = componentTypeToContainerMap[T::class]
             ?: return null
         return arr.getComponentOrNull(entityId) as T?
     }
 
     fun containsComponentForEntity(kClass: KClass<*>, entityId: EntityId): Boolean {
-        val arr = componentTypeToArray[kClass]
+        val arr = componentTypeToContainerMap[kClass]
             ?: return false
         return arr.containsComponent(entityId)
     }
@@ -52,7 +52,7 @@ class ComponentService(
     }
 
     fun getOrPutContainer(klass: KClass<*>): ComponentEntityContainer<*> {
-        return componentTypeToArray.getOrPut(klass) {
+        return componentTypeToContainerMap.getOrPut(klass) {
             ComponentEntityContainer<Any>(klass, world)
         }
     }
@@ -62,9 +62,9 @@ class ComponentService(
     }
 
     fun <T : Any> removeComponentForEntity(entityId: EntityId, componentKlass: KClass<*>): T? {
-        val container = componentTypeToArray[componentKlass]
+        val container = componentTypeToContainerMap[componentKlass]
             ?: return null
-        entityIdToActiveComponentKlassSet.getOrPut(entityId) {
+        entityIdToActiveComponentKlassSetMap.getOrPut(entityId) {
             mutableSetOf()
         }.remove(componentKlass)
         return container.removeComponent(entityId) as T?
@@ -96,7 +96,7 @@ class ComponentService(
         component: T
     ) {
         container.addOrReplaceComponentInternal(entityId, component)
-        entityIdToActiveComponentKlassSet.getOrPut(entityId) {
+        entityIdToActiveComponentKlassSetMap.getOrPut(entityId) {
             mutableSetOf()
         }.add(component::class)
     }
