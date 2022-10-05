@@ -38,7 +38,7 @@ class World {
             componentService.addComponentOrThrow(entityId, component)
         }
 
-        inline fun <reified T> removeComponent() : T? {
+        inline fun <reified T> removeComponent(): T? {
             return componentService.removeComponentForEntity<T>(entityId)
         }
 
@@ -105,7 +105,11 @@ class World {
 
     fun update(deltaTime: Duration) {
         isUpdateInProgress = true
-        systems.forEach { if (it.isEnabled) { it.update(deltaTime) } }
+        systems.forEach {
+            if (it.isEnabled) {
+                it.update(deltaTime)
+            }
+        }
         isUpdateInProgress = false
         pendingModifications.forEach { modifyEntity(it.first, it.second) }
     }
@@ -124,6 +128,21 @@ class World {
 
     operator fun <T : Any> get(entityId: EntityId, kClass: KClass<T>): T {
         return getComponentContainer(kClass).getComponent(entityId)
+    }
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.appendLine("Entities:")
+        entities.forEach { entityId ->
+            sb.appendLine("\t$entityId")
+            componentService.getAllComponentsForEntity(entityId).sortedBy {
+                it::class.toString()
+            }.forEach {
+                sb.appendLine("\t\t$it")
+            }
+        }
+
+        return sb.toString()
     }
 
 }

@@ -8,6 +8,11 @@ class ComponentService(
     val componentTypeToContainerMap = mutableMapOf<KClass<out Any>, ComponentEntityContainer<*>>()
     private val entityIdToActiveComponentKlassSetMap = mutableMapOf<EntityId, MutableSet<KClass<out Any>>>()
 
+    fun getAllComponentsForEntity(entityId: EntityId): List<Any> {
+        val activeComponentKlassSet = entityIdToActiveComponentKlassSetMap.getOrElse(entityId) { emptySet() }
+        return activeComponentKlassSet.map { componentTypeToContainerMap[it]!!.getComponent(entityId) }
+    }
+
     /**
      * Removes the entity by removing all components associated with the entity.
      */
