@@ -51,7 +51,7 @@ class FamilyService(
     val world: World,
     val componentService: ComponentService
 ) {
-    private val families = mutableMapOf<FamilyConfiguration, FamilyNode>()
+    internal val families = mutableMapOf<FamilyConfiguration, FamilyNode>()
 
     fun updateFamiliesForEntity(entityId: EntityId) {
         for ((config, node) in families) {

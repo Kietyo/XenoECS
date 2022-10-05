@@ -142,6 +142,12 @@ class World {
             }
         }
 
+        sb.appendLine("Families")
+        familyService.families.forEach {
+            sb.appendLine("\t${it.key}")
+            sb.appendLine("\t\t${it.value}")
+        }
+
         return sb.toString()
     }
 
