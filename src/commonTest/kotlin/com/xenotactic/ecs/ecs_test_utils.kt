@@ -3,6 +3,7 @@ package com.xenotactic.ecs
 object ObjectComponent
 
 data class TestComponent(val value: String)
+data class TestComponent2(val value: String)
 
 sealed class TestSealedClass {
     class RegularClassChild(

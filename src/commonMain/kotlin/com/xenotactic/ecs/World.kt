@@ -15,7 +15,7 @@ class World {
     private val systems = arrayListOf<System>()
 
     private var isUpdateInProgress = false
-    private val pendingModifications = mutableListOf<Pair<EntityId, ModifyEntityApi.() -> Unit>>()
+    internal val pendingModifications = mutableListOf<Pair<EntityId, ModifyEntityApi.() -> Unit>>()
 
     val numEntities get() = entities.size
 
@@ -112,6 +112,7 @@ class World {
         }
         isUpdateInProgress = false
         pendingModifications.forEach { modifyEntity(it.first, it.second) }
+        pendingModifications.clear()
     }
 
     inline fun <reified T : Any> addComponentListener(listener: ComponentListener<T>) {

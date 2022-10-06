@@ -243,8 +243,8 @@ internal class ECSTest {
     fun removeEntityWhenWorldContainsMultipleEntities() {
         val world = World().also { world ->
             world.addSystem(object : System() {
-                override val familyConfiguration: FamilyConfiguration
-                    = FamilyConfiguration(allOfComponents = setOf(TestComponent::class))
+                override val familyConfiguration: FamilyConfiguration =
+                    FamilyConfiguration(allOfComponents = setOf(TestComponent::class))
 
                 override fun update(deltaTime: Duration) {
                     getFamily().getNewList().forEach {
@@ -267,5 +267,36 @@ internal class ECSTest {
         world.update(1.seconds)
 
         assertEquals(world.numEntities, 0)
+    }
+
+    @Test
+    fun pendingModificationsGetCleared() {
+        val world = World()
+
+        world.addSystem(object : System() {
+            override val familyConfiguration: FamilyConfiguration = FamilyConfiguration(
+                allOfComponents = setOf(TestComponent::class),
+                noneOfComponents = setOf(TestComponent2::class)
+            )
+
+            override fun update(deltaTime: Duration) {
+                getFamily().getSequence().forEach {
+                    world.modifyEntity(it) {
+                        addComponentOrThrow(TestComponent2("2"))
+                    }
+                }
+            }
+
+        })
+
+        world.addEntity {
+            addComponentOrThrow(TestComponent("1"))
+        }
+
+        world.update(1.seconds)
+        assertTrue(world.pendingModifications.isEmpty())
+
+        world.update(1.seconds)
+        assertTrue(world.pendingModifications.isEmpty())
     }
 }
