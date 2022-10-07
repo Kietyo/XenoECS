@@ -280,7 +280,7 @@ internal class ECSTest {
             )
 
             override fun update(deltaTime: Duration) {
-                getFamily().getSequence().forEach {
+                getFamily().getNewList().forEach {
                     world.modifyEntity(it) {
                         addComponentOrThrow(TestComponent2("2"))
                     }

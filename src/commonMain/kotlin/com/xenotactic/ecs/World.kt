@@ -104,15 +104,17 @@ class World {
     }
 
     fun update(deltaTime: Duration) {
-        isUpdateInProgress = true
-        systems.forEach {
-            if (it.isEnabled) {
-                it.update(deltaTime)
+        systems.forEach { system ->
+            isUpdateInProgress = true
+
+            if (system.isEnabled) {
+                system.update(deltaTime)
             }
+
+            isUpdateInProgress = false
+            pendingModifications.forEach { modifyEntity(it.first, it.second) }
+            pendingModifications.clear()
         }
-        isUpdateInProgress = false
-        pendingModifications.forEach { modifyEntity(it.first, it.second) }
-        pendingModifications.clear()
     }
 
     inline fun <reified T : Any> addComponentListener(listener: ComponentListener<T>) {
