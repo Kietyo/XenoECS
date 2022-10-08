@@ -51,6 +51,10 @@ class World {
             }
             return component
         }
+
+        fun remove() {
+            removeEntity(entityId)
+        }
     }
 
     fun containsEntity(entityId: EntityId): Boolean {
