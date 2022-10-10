@@ -134,6 +134,11 @@ class World {
     }
 
     operator fun <T : Any> get(entityId: EntityId, kClass: KClass<T>): T {
+        if (!containsEntity(entityId)) {
+            throw ECSEntityDoesNotExist {
+                "Entity $entityId does not exist."
+            }
+        }
         return getComponentContainer(kClass).getComponent(entityId)
     }
 
