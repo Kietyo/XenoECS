@@ -2,6 +2,8 @@ package com.xenotactic.ecs
 
 import kotlin.reflect.KClass
 
+expect fun FamilyConfiguration.getString(): String
+
 data class FamilyConfiguration(
     val allOfComponents: Set<KClass<*>> = emptySet(),
     val anyOfComponents: Set<KClass<*>> = emptySet(),
@@ -12,23 +14,33 @@ data class FamilyConfiguration(
     }
 
     override fun toString(): String {
-        val sb = StringBuilder()
-        sb.appendLine("FamilyConfiguration")
-        if (allOfComponents.isNotEmpty()) {
-            sb.appendLine("\tallOfComponents:")
-            allOfComponents.sortedBy { it.qualifiedName }.forEach { sb.appendLine("\t\t${it.qualifiedName}") }
-        }
-        if (anyOfComponents.isNotEmpty()) {
-            sb.appendLine("\tanyOfComponents:")
-            anyOfComponents.sortedBy { it.qualifiedName }.forEach { sb.appendLine("\t\t${it.qualifiedName}") }
-        }
-        if (noneOfComponents.isNotEmpty()) {
-            sb.appendLine("\tnoneOfComponents:")
-            noneOfComponents.sortedBy { it.qualifiedName }.forEach { sb.appendLine("\t\t${it.qualifiedName}") }
-        }
-        return sb.toString()
+        return getString()
     }
+
+//    override fun toString(): String {
+//        val sb = StringBuilder()
+//        sb.appendLine("FamilyConfiguration")
+//        if (allOfComponents.isNotEmpty()) {
+//            sb.appendLine("\tallOfComponents:")
+//            allOfComponents.sortedBy { it.qualifiedName }.forEach { sb.appendLine("\t\t${it.qualifiedName}") }
+//        }
+//        if (anyOfComponents.isNotEmpty()) {
+//            sb.appendLine("\tanyOfComponents:")
+//            anyOfComponents.sortedBy { it.qualifiedName }.forEach { sb.appendLine("\t\t${it.qualifiedName}") }
+//        }
+//        if (noneOfComponents.isNotEmpty()) {
+//            sb.appendLine("\tnoneOfComponents:")
+//            noneOfComponents.sortedBy { it.qualifiedName }.forEach { sb.appendLine("\t\t${it.qualifiedName}") }
+//        }
+//        return sb.toString()
+//    }
 }
+
+//interface FamilyConfigurationToStringInterface {
+//    fun getString(familyConfiguration: FamilyConfiguration)
+//}
+
+
 
 data class Family(
     internal val familyConfiguration: FamilyConfiguration,
