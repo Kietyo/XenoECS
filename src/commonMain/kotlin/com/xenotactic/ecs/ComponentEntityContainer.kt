@@ -33,7 +33,7 @@ class ComponentEntityContainer<T : Any>(
     fun getComponent(entityId: EntityId): T {
         return entityIdToComponentMap[entityId]
             ?: throw ECSComponentNotFoundException {
-                "Component for class ($klass), not found for entity: ${entityId.id}"
+                "Component of class ($klass), not found for entity: ${entityId.id}"
             }
     }
 
