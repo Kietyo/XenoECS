@@ -11,6 +11,9 @@ data class FamilyConfiguration(
 ) {
     companion object {
         val EMPTY = FamilyConfiguration()
+        fun allOf(vararg components: KClass<*>): FamilyConfiguration {
+            return FamilyConfiguration(allOfComponents = components.toSet())
+        }
     }
 
     override fun toString(): String {
@@ -82,7 +85,7 @@ class FamilyService(
         }
     }
 
-    fun matchesFamilyConfiguration(entityId: EntityId, familyConfiguration: FamilyConfiguration): Boolean {
+    internal fun matchesFamilyConfiguration(entityId: EntityId, familyConfiguration: FamilyConfiguration): Boolean {
         return familyConfiguration.allOfComponents.all {
             componentService.containsComponentForEntity(it, entityId)
         } && (familyConfiguration.anyOfComponents.isEmpty() || familyConfiguration.anyOfComponents.any {

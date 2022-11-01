@@ -13,6 +13,16 @@ class ComponentService(
         return activeComponentKlassSet.map { componentTypeToContainerMap[it]!!.getComponent(entityId) }
     }
 
+    fun getStatefulEntity(entityId: EntityId): StatefulEntity {
+        val activeComponentKlassSet = entityIdToActiveComponentKlassSetMap.getOrElse(entityId) { emptySet() }
+        val componentMap = mutableMapOf<KClass<out Any>, Any>()
+        activeComponentKlassSet.forEach {
+            val component = componentTypeToContainerMap[it]!!.getComponent(entityId)
+            componentMap[it] = component
+        }
+        return StatefulEntity.create(entityId, componentMap)
+    }
+
     /**
      * Removes the entity by removing all components associated with the entity.
      */

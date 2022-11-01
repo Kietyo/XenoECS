@@ -163,4 +163,19 @@ class World {
         return sb.toString()
     }
 
+    // Returns the set of entities matching the configuration.
+    fun getEntities(
+        familyConfiguration: FamilyConfiguration
+    ): Set<EntityId> {
+        return entities.filter {
+            familyService.matchesFamilyConfiguration(it, familyConfiguration)
+        }.toSet()
+    }
+
+    fun getStatefulEntity(
+        entityId: EntityId
+    ): StatefulEntity {
+        TODO()
+    }
+
 }
