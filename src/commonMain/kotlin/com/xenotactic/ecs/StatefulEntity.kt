@@ -24,8 +24,8 @@ data class StatefulEntity private constructor(
         }
     }
 
-    operator fun get(klass: KClass<out Any>): Any? {
-        return componentMap[klass]
+    operator fun <T : Any> get(klass: KClass<T>): T {
+        return componentMap[klass]!! as T
     }
 
     companion object {

@@ -178,4 +178,11 @@ class World {
         return componentService.getStatefulEntitySnapshot(entityId)
     }
 
+    fun getFirstStatefulEntityMatching(familyConfiguration: FamilyConfiguration): StatefulEntity {
+        val entityId = entities.first {
+            familyService.matchesFamilyConfiguration(it, familyConfiguration)
+        }
+        return getStatefulEntitySnapshot(entityId)
+    }
+
 }
