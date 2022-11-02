@@ -172,10 +172,10 @@ class World {
         }.toSet()
     }
 
-    fun getStatefulEntity(
+    fun getStatefulEntitySnapshot(
         entityId: EntityId
     ): StatefulEntity {
-        TODO()
+        return componentService.getStatefulEntitySnapshot(entityId)
     }
 
 }
