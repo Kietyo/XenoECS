@@ -182,7 +182,7 @@ class World {
         }.toSet()
     }
 
-    fun getStatefulEntities(
+    fun getStatefulEntitySnapshots(
         familyConfiguration: FamilyConfiguration
     ): List<StatefulEntity> {
         return entities.filter {
