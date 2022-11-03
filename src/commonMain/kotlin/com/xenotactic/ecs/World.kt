@@ -69,6 +69,16 @@ class World {
         return newEntityId
     }
 
+    fun addEntityReturnStateful(builder: ModifyEntityApi.() -> Unit = {}): StatefulEntity {
+        // While an update is in progress, the components won't be added until the end
+        // of the update cycle.
+        require(!isUpdateInProgress) {
+            "Cannot return a newly added stateful entity during an update."
+        }
+        val id = addEntity(builder)
+        return getStatefulEntitySnapshot(id)
+    }
+
     fun modifyEntity(entityId: EntityId, builder: ModifyEntityApi.() -> Unit) {
         if (isUpdateInProgress) {
             pendingModifications.add(entityId to builder)
@@ -170,6 +180,16 @@ class World {
         return entities.filter {
             familyService.matchesFamilyConfiguration(it, familyConfiguration)
         }.toSet()
+    }
+
+    fun getStatefulEntities(
+        familyConfiguration: FamilyConfiguration
+    ): List<StatefulEntity> {
+        return entities.filter {
+            familyService.matchesFamilyConfiguration(it, familyConfiguration)
+        }.map {
+            getStatefulEntitySnapshot(it)
+        }
     }
 
     fun getStatefulEntitySnapshot(
