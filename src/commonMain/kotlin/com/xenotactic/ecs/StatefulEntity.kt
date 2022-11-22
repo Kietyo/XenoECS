@@ -14,6 +14,7 @@ data class StatefulEntity private constructor(
     private val componentMap: Map<KClass<out Any>, *>
 ) {
     val numComponents get() = componentMap.size
+    val allComponents get() = componentMap.values
     fun containsComponentType(klass: KClass<out Any>): Boolean {
         return componentMap.containsKey(klass)
     }

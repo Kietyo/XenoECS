@@ -182,6 +182,8 @@ class World {
         }.toSet()
     }
 
+    fun getStatefulEntities() = entities.map { getStatefulEntitySnapshot(it) }
+
     fun getStatefulEntitySnapshots(
         familyConfiguration: FamilyConfiguration
     ): List<StatefulEntity> {
