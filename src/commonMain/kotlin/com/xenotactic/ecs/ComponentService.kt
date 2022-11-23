@@ -66,6 +66,21 @@ class ComponentService(
         }
     }
 
+    /**
+     * Attempts to add the component to the entity.
+     * If the component already exists, then throws an ECSComponentAlreadyExistsException.
+     */
+    fun <T : Any> addComponentOrThrow(entityId: EntityId, component: T) {
+        val container = getOrPutContainer(component::class)
+        if (container.containsComponent(entityId)) {
+            throw ECSComponentAlreadyExistsException {
+                "Class `${component::class}` of component `$component` already exists for entity: $entityId"
+            }
+        } else {
+            addOrReplaceComponentInternal(container, entityId, component)
+        }
+    }
+
     fun getOrPutContainer(klass: KClass<*>): ComponentEntityContainer<*> {
         return componentTypeToContainerMap.getOrPut(klass) {
             ComponentEntityContainer<Any>(klass, world)
@@ -88,21 +103,6 @@ class ComponentService(
     inline fun <reified T : Any> addComponentListener(listener: ComponentListener<T>) {
         val container = getOrPutContainer(T::class) as ComponentEntityContainer<T>
         container.addListener(listener)
-    }
-
-    /**
-     * Attempts to add the component to the entity.
-     * If the component already exists, then throws an ECSComponentAlreadyExistsException.
-     */
-    fun <T : Any> addComponentOrThrow(entityId: EntityId, component: T) {
-        val container = getOrPutContainer(component::class)
-        if (container.containsComponent(entityId)) {
-            throw ECSComponentAlreadyExistsException {
-                "Class `${component::class}` of component `$component` already exists for entity: $entityId"
-            }
-        } else {
-            addOrReplaceComponentInternal(container, entityId, component)
-        }
     }
 
     private fun <T : Any> addOrReplaceComponentInternal(

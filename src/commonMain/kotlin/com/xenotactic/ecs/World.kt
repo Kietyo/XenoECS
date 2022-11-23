@@ -20,6 +20,11 @@ class World {
     val numEntities get() = entities.size
 
     inner class ModifyEntityApi(val entityId: EntityId) {
+        fun addFromStagingEntity(stagingEntity: StagingEntity) {
+            stagingEntity.allComponents.onEach {
+                componentService.addComponentOrThrow(entityId, it)
+            }
+        }
         fun <T : Any> addOrReplaceComponent(component: T) {
             componentService.addOrReplaceComponentForEntity(entityId, component)
         }
