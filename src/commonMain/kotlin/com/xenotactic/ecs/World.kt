@@ -212,4 +212,12 @@ class World {
         return getStatefulEntitySnapshot(entityId)
     }
 
+    fun getStagingEntities() = entities.map { getStagingEntity(it) }
+
+    fun getStagingEntity(
+        entityId: EntityId
+    ): StagingEntity {
+        return componentService.getStagingEntity(entityId)
+    }
+
 }

@@ -14,6 +14,11 @@ data class StagingEntity(
     constructor(block: StagingEntity.() -> Unit) : this() {
         block(this)
     }
+
+    operator fun <T : Any> get(klass: KClass<T>): T {
+        return componentMap[klass]!! as T
+    }
+
     fun <T : Any> addOrReplaceComponentForEntity(component: T) {
         componentMap[component::class] = component
     }

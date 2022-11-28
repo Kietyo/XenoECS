@@ -14,13 +14,23 @@ class ComponentService(
     }
 
     fun getStatefulEntitySnapshot(entityId: EntityId): StatefulEntity {
+        val componentMap = getComponentMap(entityId)
+        return StatefulEntity.create(entityId, componentMap)
+    }
+
+    fun getStagingEntity(entityId: EntityId): StagingEntity {
+        val componentMap = getComponentMap(entityId)
+        return StagingEntity(componentMap)
+    }
+
+    private fun getComponentMap(entityId: EntityId): MutableMap<KClass<out Any>, Any> {
         val activeComponentKlassSet = entityIdToActiveComponentKlassSetMap.getOrElse(entityId) { emptySet() }
         val componentMap = mutableMapOf<KClass<out Any>, Any>()
         activeComponentKlassSet.forEach {
             val component = componentTypeToContainerMap[it]!!.getComponent(entityId)
             componentMap[it] = component
         }
-        return StatefulEntity.create(entityId, componentMap)
+        return componentMap
     }
 
     /**
