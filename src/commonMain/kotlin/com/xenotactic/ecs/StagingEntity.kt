@@ -19,6 +19,8 @@ data class StagingEntity(
         return componentMap[klass]!! as T
     }
 
+    fun contains(klass: KClass<Any>) = componentMap.containsKey(klass)
+
     fun <T : Any> addOrReplaceComponentForEntity(component: T) {
         componentMap[component::class] = component
     }
