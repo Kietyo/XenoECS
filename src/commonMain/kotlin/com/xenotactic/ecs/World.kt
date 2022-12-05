@@ -157,6 +157,15 @@ class World {
         return getComponentContainer(kClass).getComponent(entityId)
     }
 
+    fun <T : Any> getOrNull(entityId: EntityId, kClass: KClass<T>): T? {
+        if (!containsEntity(entityId)) {
+            throw ECSEntityDoesNotExist {
+                "Entity $entityId does not exist."
+            }
+        }
+        return getComponentContainer(kClass).getComponentOrNull(entityId)
+    }
+
     override fun toString(): String {
         val sb = StringBuilder()
         sb.appendLine("Entities:")
