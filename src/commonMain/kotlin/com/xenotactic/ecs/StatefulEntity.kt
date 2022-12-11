@@ -11,26 +11,11 @@ import kotlin.reflect.KClass
  */
 data class StatefulEntity private constructor(
     val entityId: EntityId,
-    private val componentMap: Map<KClass<out Any>, *>
-) {
-    val numComponents get() = componentMap.size
-    val allComponents get() = componentMap.values
-    fun containsComponentType(klass: KClass<out Any>): Boolean {
-        return componentMap.containsKey(klass)
-    }
-
-    fun containsComponentTypes(vararg klass: KClass<out Any>): Boolean {
-        return klass.all {
-            componentMap.containsKey(it)
-        }
-    }
-
-    operator fun <T : Any> get(klass: KClass<T>): T {
-        return componentMap[klass]!! as T
-    }
+    override val componentMap: Map<KClass<out Any>, Any>
+) : IEntity() {
 
     companion object {
-        fun create(entityId: EntityId, componentMap: Map<KClass<out Any>, *>): StatefulEntity {
+        fun create(entityId: EntityId, componentMap: Map<KClass<out Any>, Any>): StatefulEntity {
             return StatefulEntity(entityId, componentMap)
         }
     }

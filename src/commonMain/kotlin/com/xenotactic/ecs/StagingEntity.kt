@@ -8,18 +8,11 @@ import kotlin.reflect.KClass
  * It can be used as input into a world to insert the "entity" into the world.
  */
 data class StagingEntity(
-    private val componentMap: MutableMap<KClass<out Any>, Any> = mutableMapOf()
-) {
-    val allComponents: Collection<Any> get() = componentMap.values
+    override val componentMap: MutableMap<KClass<out Any>, Any> = mutableMapOf()
+) : IEntity() {
     constructor(block: StagingEntity.() -> Unit) : this() {
         block(this)
     }
-
-    operator fun <T : Any> get(klass: KClass<T>): T {
-        return componentMap[klass]!! as T
-    }
-
-    fun contains(klass: KClass<Any>) = componentMap.containsKey(klass)
 
     fun <T : Any> addOrReplaceComponentForEntity(component: T) {
         componentMap[component::class] = component
