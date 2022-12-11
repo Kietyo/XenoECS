@@ -20,3 +20,4 @@ abstract class IEntity(
         return componentMap[klass]!! as T
     }
 }
+
