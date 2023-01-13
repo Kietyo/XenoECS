@@ -1,8 +1,9 @@
 plugins {
     kotlin("multiplatform")
-    kotlin("plugin.serialization")
+//    kotlin("plugin.serialization") version "1.7.20"
+//    kotlin("plugin.serialization")
     id("maven-publish")
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.4"
+    id("org.jetbrains.kotlinx.benchmark") version "0.4.7"
     kotlin("plugin.allopen") version "1.6.0"
 }
 

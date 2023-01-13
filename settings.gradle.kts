@@ -1,6 +1,6 @@
 pluginManagement {
     plugins {
-        kotlin("multiplatform") version "1.7.0"
+        kotlin("multiplatform") version "1.8.0"
     }
 }
 
