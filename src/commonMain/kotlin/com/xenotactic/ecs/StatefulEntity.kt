@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
 data class StatefulEntity private constructor(
     val entityId: EntityId,
     override val componentMap: Map<KClass<out Any>, Any>
-) : IEntity() {
+) : AbstractEntity() {
 
     companion object {
         fun create(entityId: EntityId, componentMap: Map<KClass<out Any>, Any>): StatefulEntity {

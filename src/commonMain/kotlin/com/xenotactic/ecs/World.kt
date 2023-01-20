@@ -19,7 +19,7 @@ class World {
 
     val numEntities get() = entities.size
 
-    inner class ModifyEntityApi(val entityId: EntityId) {
+    inner class ModifyEntityApi(val entityId: EntityId): IEntity {
         fun addFromStagingEntity(stagingEntity: StagingEntity) {
             stagingEntity.allComponents.onEach {
                 componentService.addComponentOrThrow(entityId, it)
@@ -59,6 +59,10 @@ class World {
 
         fun remove() {
             removeEntity(entityId)
+        }
+
+        override fun <T : Any> get(klass: KClass<T>): T {
+            return getComponentContainer(klass).getComponent(entityId)
         }
     }
 

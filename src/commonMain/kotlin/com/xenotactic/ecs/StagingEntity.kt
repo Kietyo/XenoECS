@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  */
 data class StagingEntity(
     override val componentMap: MutableMap<KClass<out Any>, Any> = mutableMapOf()
-) : IEntity() {
+) : AbstractEntity() {
     constructor(block: StagingEntity.() -> Unit) : this() {
         block(this)
     }
