@@ -25,6 +25,9 @@ data class Family(
     internal val familyConfiguration: FamilyConfiguration,
     private var entities: ArrayList<EntityId>
 ) {
+    val isEmpty get() = entities.isEmpty()
+    val size get() = entities.size
+    fun first() = entities.first()
     fun getSequence(): Sequence<EntityId> = entities.asSequence()
     fun getList(): List<EntityId> = entities
 
