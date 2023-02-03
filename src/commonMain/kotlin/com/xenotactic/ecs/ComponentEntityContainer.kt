@@ -34,7 +34,7 @@ class ComponentEntityContainer<T : Any>(
         return entityIdToComponentMap[entityId]
             ?: throw ECSComponentNotFoundException {
                 val statefulEntity = world.getStatefulEntitySnapshot(entityId)
-                "Component of class ($klass), not found for entity: ${entityId.id}. Current data: $statefulEntity"
+                "Component of class ($klass), not found for entity: ${entityId.id}.\nCurrent data: $statefulEntity"
             }
     }
 
