@@ -19,7 +19,8 @@ internal class InjectionsTest {
         val comp = TestComponent("blah")
         injections.setSingletonOrThrow(comp)
 
-        assertEquals(injections.getSingleton<TestComponent>(), comp)
+        val ret: TestComponent = injections.getSingleton<TestComponent>()
+        assertEquals(ret, comp)
     }
 
     @Test
