@@ -170,6 +170,10 @@ class World {
         return getComponentContainer(kClass).getComponentOrNull(entityId)
     }
 
+    inline fun <reified T : Any> existsComponent(entityId: EntityId): Boolean {
+        return getComponentContainer<T>().containsComponent(entityId)
+    }
+
     override fun toString(): String {
         val sb = StringBuilder()
         sb.appendLine("Entities:")
