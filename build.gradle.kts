@@ -21,14 +21,14 @@ repositories {
 }
 
 java {
-    toolchain.languageVersion.set(JavaLanguageVersion.of(18))
+    toolchain.languageVersion.set(JavaLanguageVersion.of(8))
 }
 
 kotlin {
-    jvmToolchain(18)
+//    jvmToolchain(18)
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "18"
+            kotlinOptions.jvmTarget = "1.8"
         }
         withJava()
         testRuns["test"].executionTask.configure {
