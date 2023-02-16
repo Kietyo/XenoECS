@@ -1,10 +1,9 @@
 plugins {
     kotlin("multiplatform")
-//    kotlin("plugin.serialization") version "1.7.20"
     kotlin("plugin.serialization")
     id("maven-publish")
-    id("org.jetbrains.kotlinx.benchmark") version "0.4.7"
-    kotlin("plugin.allopen") version "1.6.0"
+    id("org.jetbrains.kotlinx.benchmark")
+    kotlin("plugin.allopen")
 }
 
 allOpen {
@@ -15,6 +14,7 @@ group = "com.xenotactic.ecs"
 version = "1.0.0"
 
 val kotlinxSerialization: String by project
+val kotlinxBenchmark: String by project
 
 repositories {
     mavenCentral()
@@ -33,7 +33,6 @@ kotlin {
     js(IR) {
         browser {
             commonWebpackConfig {
-//                cssSupport.enabled = true
             }
         }
     }
@@ -46,13 +45,12 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerialization")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-protobuf:$kotlinxSerialization")
-                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:$kotlinxBenchmark")
             }
         }
         val commonTest by getting {
