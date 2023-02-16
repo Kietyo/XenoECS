@@ -20,10 +20,15 @@ repositories {
     mavenCentral()
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(18))
+}
+
 kotlin {
+    jvmToolchain(18)
     jvm {
         compilations.all {
-            kotlinOptions.jvmTarget = "1.8"
+            kotlinOptions.jvmTarget = "18"
         }
         withJava()
         testRuns["test"].executionTask.configure {
