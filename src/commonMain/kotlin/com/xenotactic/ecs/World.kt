@@ -135,6 +135,7 @@ class World {
             }
 
             isUpdateInProgress = false
+
             pendingModifications.forEach { modifyEntity(it.first, it.second) }
             pendingModifications.clear()
         }
