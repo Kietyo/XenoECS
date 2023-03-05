@@ -1,0 +1,8 @@
+name: XenoECS
+type: library
+version: 1.0.0
+#src: ./src
+dependencies:
+#  - ./libs/kds
+#  - git::adder::korlibs/kproject::/modules/adder::54f73b01cea9cb2e8368176ac45f2fca948e57db
+#  - maven::common::org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4

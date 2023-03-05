@@ -19,9 +19,6 @@ class TypedInjections<T: Any> {
     }
 
     inline fun <reified V: T> getSingleton(): V {
-        println("V::class: ${V::class}")
-        println("this::class: ${this::class}")
-        println(V::class == this::class)
         return getSingletonOrNull<V>() ?:
         throw SingletonInjectionDoesNotExistException {
             "Singleton injection does not exist: ${V::class}"
