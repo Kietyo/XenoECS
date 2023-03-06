@@ -12,5 +12,6 @@ abstract class System {
         family = newFamily
     }
     fun getFamily() = family
+
     abstract fun update(deltaTime: Duration)
 }
