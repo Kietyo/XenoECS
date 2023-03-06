@@ -5,8 +5,11 @@ import kotlin.reflect.KClass
 internal expect fun FamilyConfiguration.getString(): String
 
 data class FamilyConfiguration(
+    // A component must have all of these components to be a part of the family.
     val allOfComponents: Set<KClass<*>> = emptySet(),
+    // A component can have any of these components to be a part of the family.
     val anyOfComponents: Set<KClass<*>> = emptySet(),
+    // A component must not have any of these components to be a part of the family.
     val noneOfComponents: Set<KClass<*>> = emptySet()
 ) {
     companion object {
