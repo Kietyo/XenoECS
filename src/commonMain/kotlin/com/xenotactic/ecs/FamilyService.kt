@@ -25,7 +25,6 @@ data class FamilyConfiguration(
 }
 
 data class Family(
-    internal val familyConfiguration: FamilyConfiguration,
     private var entities: ArrayList<EntityId>
 ) {
     val isEmpty get() = entities.isEmpty()
@@ -52,7 +51,7 @@ data class Family(
     }
 
     companion object {
-        val EMPTY = Family(FamilyConfiguration.EMPTY, ArrayList())
+        val EMPTY = Family(ArrayList())
     }
 }
 
@@ -125,7 +124,6 @@ class FamilyService(
         return families.getOrPut(familyConfiguration) {
             FamilyNode(
                 Family(
-                    familyConfiguration,
                     ArrayList()
                 )
             )

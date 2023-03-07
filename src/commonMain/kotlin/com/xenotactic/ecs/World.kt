@@ -19,12 +19,13 @@ class World {
 
     val numEntities get() = entities.size
 
-    inner class ModifyEntityApi(val entityId: EntityId): IEntity {
+    inner class ModifyEntityApi(val entityId: EntityId) : IEntity {
         fun addComponentsFromStagingEntity(stagingEntity: StagingEntity) {
             stagingEntity.allComponents.onEach {
                 componentService.addComponentOrThrow(entityId, it)
             }
         }
+
         fun <T : Any> addOrReplaceComponent(component: T) {
             componentService.addOrReplaceComponentForEntity(entityId, component)
         }
@@ -187,9 +188,31 @@ class World {
             }
         }
 
-        sb.appendLine("Families")
+        sb.appendLine("Families:")
         familyService.families.forEach {
-            sb.appendLine("\t${it.key}")
+            sb.appendLine("\tFamilyConfiguration")
+
+            sb.appendLine("\t\tallOfComponents")
+            if (it.key.allOfComponents.isNotEmpty()) {
+                it.key.allOfComponents.forEach {
+                    sb.appendLine("\t\t\t$it")
+                }
+            }
+
+            if (it.key.anyOfComponents.isNotEmpty()) {
+                sb.appendLine("\t\tanyOfComponents")
+                it.key.anyOfComponents.forEach {
+                    sb.appendLine("\t\t\t$it")
+                }
+            }
+
+            if (it.key.noneOfComponents.isNotEmpty()) {
+                sb.appendLine("\t\tnoneOfComponents")
+                it.key.noneOfComponents.forEach {
+                    sb.appendLine("\t\t\t$it")
+                }
+            }
+
             sb.appendLine("\t\t${it.value}")
         }
 
