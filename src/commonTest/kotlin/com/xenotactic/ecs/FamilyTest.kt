@@ -134,4 +134,16 @@ internal class FamilyTest {
 
         assertEquals(family.getList().size, 1)
     }
+
+    @Test
+    fun gettingSameFamilyTwice_entityIdsConsistent() {
+        val world = World()
+
+        val entity = world.addEntity {
+            addOrReplaceComponent(ObjectComponent)
+        }
+
+        val family1 = world.getOrCreateFamily(FamilyConfiguration.allOf(ObjectComponent::class))
+        
+    }
 }
