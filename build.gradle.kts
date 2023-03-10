@@ -61,6 +61,7 @@ kotlin {
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(project(":ktruth"))
             }
         }
         val jvmMain by getting
