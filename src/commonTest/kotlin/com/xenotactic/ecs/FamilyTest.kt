@@ -1,5 +1,6 @@
 package com.xenotactic.ecs
 
+import com.kietyo.ktruth.assertThat
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -136,7 +137,7 @@ internal class FamilyTest {
     }
 
     @Test
-    fun gettingSameFamilyTwice_entityIdsConsistent() {
+    fun gettingSameFamilyTwice_doesNotIncreaseFamilySize() {
         val world = World()
 
         val entity = world.addEntity {
@@ -144,6 +145,11 @@ internal class FamilyTest {
         }
 
         val family1 = world.getOrCreateFamily(FamilyConfiguration.allOf(ObjectComponent::class))
-        
+
+        assertThat(family1.size).isEqualTo(1)
+
+        val family2 = world.getOrCreateFamily(FamilyConfiguration.allOf(ObjectComponent::class))
+        assertThat(family1.size).isEqualTo(1)
+        assertThat(family2.size).isEqualTo(1)
     }
 }

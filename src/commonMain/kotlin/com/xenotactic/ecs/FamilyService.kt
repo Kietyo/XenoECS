@@ -111,22 +111,21 @@ class FamilyService(
     }
 
     fun getOrCreateFamily(familyConfiguration: FamilyConfiguration): FamilyNode {
-        val node = getOrCreateFamilyNode(familyConfiguration)
-        world.entities.asSequence().filter {
-            matchesFamilyConfiguration(it, familyConfiguration)
-        }.forEach {
-            node.family.addEntityIfNotExists(it)
-        }
-        return node
-    }
-
-    private fun getOrCreateFamilyNode(familyConfiguration: FamilyConfiguration): FamilyNode {
         return families.getOrPut(familyConfiguration) {
-            FamilyNode(
+            val newNode = FamilyNode(
                 Family(
                     ArrayList()
                 )
             )
+
+            // New node. Need to initialize.
+            world.entities.asSequence().filter {
+                matchesFamilyConfiguration(it, familyConfiguration)
+            }.forEach {
+                newNode.family.addEntityIfNotExists(it)
+            }
+
+            newNode
         }
     }
 }
