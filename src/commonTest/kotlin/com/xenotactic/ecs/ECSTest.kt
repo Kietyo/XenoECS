@@ -192,7 +192,9 @@ internal class ECSTest {
 
         assertTrue(world.containsEntity(entity))
 
-        world.removeEntity(entity)
+        world.modifyEntity(entity) {
+            removeThisEntity()
+        }
 
         assertFalse(world.containsEntity(entity))
     }
@@ -232,7 +234,9 @@ internal class ECSTest {
         assertTrue(world.containsEntity(entity))
         assertTrue(testComponentContainer.containsComponent(entity))
 
-        world.removeEntity(entity)
+        world.modifyEntity(entity) {
+            removeThisEntity()
+        }
 
         assertTrue(onRemoveCalled)
         assertFalse(world.containsEntity(entity))
@@ -248,10 +252,11 @@ internal class ECSTest {
 
                 override fun update(deltaTime: Duration) {
                     getFamily().getNewList().forEach {
-                        world.removeEntity(it)
+                        world.modifyEntity(it) {
+                            removeThisEntity()
+                        }
                     }
                 }
-
             })
         }
 

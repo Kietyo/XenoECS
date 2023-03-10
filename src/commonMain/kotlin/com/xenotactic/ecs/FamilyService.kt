@@ -70,7 +70,8 @@ class FamilyService(
     fun updateFamiliesForEntity(entityId: EntityId) {
         for ((config, node) in families) {
             if (matchesFamilyConfiguration(entityId, config)) {
-                if (!node.family.containsEntity(entityId)) {
+                val familyAlreadyContainsEntity = node.family.containsEntity(entityId)
+                if (!familyAlreadyContainsEntity) {
                     // Only add and call listeners if it didn't already exists in the family.
                     node.family.addEntityIfNotExists(entityId)
                     for (listener in node.listeners) {

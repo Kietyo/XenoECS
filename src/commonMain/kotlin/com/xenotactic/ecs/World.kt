@@ -58,7 +58,7 @@ class World {
             return component
         }
 
-        fun remove() {
+        fun removeThisEntity() {
             removeEntity(entityId)
         }
 
@@ -98,7 +98,7 @@ class World {
         familyService.updateFamiliesForEntity(entityId)
     }
 
-    fun removeEntity(entityId: EntityId) {
+    private fun removeEntity(entityId: EntityId) {
         componentService.removeEntity(entityId)
         entities.remove(entityId)
     }
