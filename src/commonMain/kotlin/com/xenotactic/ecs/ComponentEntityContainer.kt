@@ -16,19 +16,15 @@ class ComponentEntityContainer<T : Any>(
         listeners.forEach {
             it.onAdd(entityId, component)
         }
-        if (previousComponent == null) {
-            entityIdToListenersMap.getOrElse(entityId) {
-                emptyList()
-            }.forEach {
-                it.onAdd(component)
-            }
-        } else {
-            entityIdToListenersMap.getOrElse(entityId) {
-                emptyList()
-            }.forEach {
-                it.onReplace(previousComponent, component)
-            }
+        val listeners = entityIdToListenersMap.getOrElse(entityId) {
+            emptyList()
         }
+        if (previousComponent == null) {
+            listeners.forEach { it.onAdd(component) }
+        } else {
+            listeners.forEach { it.onReplace(previousComponent, component) }
+        }
+        listeners.forEach { it.onAddOrReplace(previousComponent, component) }
 
         return previousComponent
     }
