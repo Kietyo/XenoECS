@@ -127,18 +127,9 @@ internal class ECSTest {
             )
         )
         world.addComponentListener(object : ComponentListener<ObjectComponent> {
-            override fun onAdd(entityId: EntityId, component: ObjectComponent) {
+            override fun onAddOrReplace(entityId: EntityId, old: ObjectComponent?, new: ObjectComponent) {
                 assertEquals(objectComponentFamily.getList().size, 1)
             }
-
-            override fun onRemove(entityId: EntityId, component: ObjectComponent) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onExisting(entityId: EntityId, component: ObjectComponent) {
-                TODO("Not yet implemented")
-            }
-
         })
 
         val newEntity = world.addEntity()
@@ -164,17 +155,9 @@ internal class ECSTest {
         }
 
         world.addComponentListener(object : ComponentListener<ObjectComponent> {
-            override fun onAdd(entityId: EntityId, component: ObjectComponent) {
-                TODO()
-            }
-
             override fun onRemove(entityId: EntityId, component: ObjectComponent) {
                 assertEquals(objectComponentFamily.getList().size, 0)
             }
-
-            override fun onExisting(entityId: EntityId, component: ObjectComponent) {
-            }
-
         })
 
         world.modifyEntity(newEntity) {
@@ -208,7 +191,7 @@ internal class ECSTest {
         var onExistingCalled = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entityId: EntityId, component: TestComponent) {
+            override fun onAdd(entityId: EntityId, new: TestComponent) {
                 onAddCalled = true
             }
 

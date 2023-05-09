@@ -13,18 +13,21 @@ class ComponentEntityContainer<T : Any>(
     internal fun addOrReplaceComponentInternal(entityId: EntityId, component: Any): T? {
         val previousComponent = entityIdToComponentMap.put(entityId, component as T)
         world.familyService.updateFamiliesForEntity(entityId)
-        listeners.forEach {
-            it.onAdd(entityId, component)
-        }
-        val listeners = entityIdToListenersMap.getOrElse(entityId) {
+
+        val entityListeners = entityIdToListenersMap.getOrElse(entityId) {
             emptyList()
         }
         if (previousComponent == null) {
-            listeners.forEach { it.onAdd(component) }
+            listeners.forEach { it.onAdd(entityId, component) }
+            entityListeners.forEach { it.onAdd(component) }
         } else {
-            listeners.forEach { it.onReplace(previousComponent, component) }
+            listeners.forEach { it.onReplace(entityId, previousComponent, component) }
+            entityListeners.forEach { it.onReplace(previousComponent, component) }
         }
-        listeners.forEach { it.onAddOrReplace(previousComponent, component) }
+        listeners.forEach {
+            it.onAddOrReplace(entityId, previousComponent, component)
+        }
+        entityListeners.forEach { it.onAddOrReplace(previousComponent, component) }
 
         return previousComponent
     }
