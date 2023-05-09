@@ -7,15 +7,30 @@ class ComponentEntityContainer<T : Any>(
     private val world: World
 ) {
     private val entityIdToComponentMap: MutableMap<EntityId, T> = mutableMapOf()
+    private val entityIdToListenersMap: MutableMap<EntityId, MutableList<EntityComponentListener<T>>> = mutableMapOf()
     private val listeners = mutableListOf<ComponentListener<T>>()
 
     internal fun addOrReplaceComponentInternal(entityId: EntityId, component: Any): T? {
-        val res = entityIdToComponentMap.put(entityId, component as T)
+        val previousComponent = entityIdToComponentMap.put(entityId, component as T)
         world.familyService.updateFamiliesForEntity(entityId)
         listeners.forEach {
             it.onAdd(entityId, component)
         }
-        return res
+        if (previousComponent == null) {
+            entityIdToListenersMap.getOrElse(entityId) {
+                emptyList()
+            }.forEach {
+                it.onAdd(component)
+            }
+        } else {
+            entityIdToListenersMap.getOrElse(entityId) {
+                emptyList()
+            }.forEach {
+                it.onReplace(previousComponent, component)
+            }
+        }
+
+        return previousComponent
     }
 
     fun getComponentOrAdd(entityId: EntityId, default: () -> T): T {
@@ -31,7 +46,7 @@ class ComponentEntityContainer<T : Any>(
     }
 
     fun getComponent(entityId: EntityId): T {
-        return entityIdToComponentMap[entityId]
+        return getComponentOrNull(entityId)
             ?: throw ECSComponentNotFoundException {
                 val statefulEntity = world.getStatefulEntitySnapshot(entityId)
                 "Component of class ($klass), not found for entity: ${entityId.id}.\nCurrent data: $statefulEntity"
@@ -54,10 +69,22 @@ class ComponentEntityContainer<T : Any>(
         return entityIdToComponentMap.containsKey(entityId)
     }
 
-    fun addListener(listener: ComponentListener<T>) {
+    fun addComponentListener(listener: ComponentListener<T>) {
         listeners.add(listener)
         for ((entity, component) in entityIdToComponentMap) {
             listener.onExisting(entity, component)
+        }
+    }
+
+    fun addEntityComponentListener(entityId: EntityId, listener: EntityComponentListener<T>): Closeable {
+        val listeners = entityIdToListenersMap.getOrPut(entityId) {
+            mutableListOf()
+        }
+        listeners.add(listener)
+        return object : Closeable {
+            override fun close() {
+                listeners.remove(listener)
+            }
         }
     }
 }

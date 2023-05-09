@@ -112,7 +112,12 @@ class ComponentService(
 
     inline fun <reified T : Any> addComponentListener(listener: ComponentListener<T>) {
         val container = getOrPutContainer(T::class) as ComponentEntityContainer<T>
-        container.addListener(listener)
+        container.addComponentListener(listener)
+    }
+
+    inline fun <reified T : Any> addEntityComponentListener(entityId: EntityId, listener: EntityComponentListener<T>): Closeable {
+        val container = getOrPutContainer(T::class) as ComponentEntityContainer<T>
+        return container.addEntityComponentListener(entityId, listener)
     }
 
     private fun <T : Any> addOrReplaceComponentInternal(
