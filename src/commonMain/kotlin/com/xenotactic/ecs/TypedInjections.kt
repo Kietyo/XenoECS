@@ -28,4 +28,16 @@ class TypedInjections<T: Any> {
     inline fun <reified V: T> getSingletonOrNull(): V? {
         return singletonComponents[V::class] as V?
     }
+
+    fun putAll(other: TypedInjections<T>) {
+        singletonComponents.putAll(other.singletonComponents)
+    }
+
+    companion object {
+        fun <T : Any> copy(other: TypedInjections<T>): TypedInjections<T> {
+            val copy = TypedInjections<T>()
+            copy.singletonComponents.putAll(other.singletonComponents)
+            return copy
+        }
+    }
 }
