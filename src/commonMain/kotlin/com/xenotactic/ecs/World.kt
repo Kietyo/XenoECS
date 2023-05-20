@@ -52,7 +52,7 @@ class World {
             val component = componentService.getComponentForEntityOrNull<T>(entityId)
             if (component == null) {
                 val newComponent = default()
-                addOrReplaceComponent(newComponent)
+                addComponentOrThrow(newComponent)
                 return newComponent
             }
             return component
