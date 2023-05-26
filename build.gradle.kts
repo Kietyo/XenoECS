@@ -1,3 +1,6 @@
+import korlibs.korge.gradle.configureAutoVersions
+
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -104,3 +107,9 @@ benchmark {
         //        register("jsIr")
     }
 }
+
+configureAutoVersions()
+//
+//repositories {
+//    mavenCentral()
+//}
