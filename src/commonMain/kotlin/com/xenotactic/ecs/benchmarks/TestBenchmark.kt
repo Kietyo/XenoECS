@@ -9,7 +9,7 @@ data class TestComponent1(val data: String)
 data class TestComponent2(val data: String)
 
 @State(Scope.Benchmark)
-class TestBenchmark {
+open class TestBenchmark {
 
     val classToInstanceMap = mutableMapOf<KClass<*>, Any>().apply {
         this[TestComponent2::class] = TestComponent2("test2")

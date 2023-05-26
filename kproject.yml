@@ -2,7 +2,7 @@
 #type: library
 #version: 1.0.0
 plugins:
-  - org.jetbrains.kotlinx.benchmark
+  - org.jetbrains.kotlinx.benchmark:0.4.4
   - serialization
   - org.jetbrains.kotlin.plugin.allopen
 dependencies:

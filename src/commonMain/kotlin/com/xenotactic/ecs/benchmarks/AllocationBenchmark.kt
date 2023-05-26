@@ -1,10 +1,6 @@
 package com.xenotactic.ecs.benchmarks
 
-import kotlinx.benchmark.Benchmark
-import kotlinx.benchmark.BenchmarkTimeUnit
-import kotlinx.benchmark.OutputTimeUnit
-import kotlinx.benchmark.Scope
-import kotlinx.benchmark.State
+import kotlinx.benchmark.*
 
 data class Vector2(
     var x: Int = 0,
@@ -23,11 +19,12 @@ fun multiplyVector2WithOut(input: Vector2, multiplier: Int, out: Vector2 = Vecto
 
 @State(Scope.Benchmark)
 @OutputTimeUnit(BenchmarkTimeUnit.MILLISECONDS)
-class AllocationBenchmark {
+open class AllocationBenchmark {
+    val TEST_VECTOR = Vector2(2, 3)
 
-    companion object {
-        val TEST_VECTOR = Vector2(2, 3)
-    }
+//    companion object {
+//        val TEST_VECTOR = Vector2(2, 3)
+//    }
 
     val preAllocated = Vector2()
 
