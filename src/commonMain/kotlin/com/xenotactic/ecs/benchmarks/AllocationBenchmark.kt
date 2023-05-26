@@ -1,4 +1,4 @@
-package benchmarks
+package com.xenotactic.ecs.benchmarks
 
 import kotlinx.benchmark.Benchmark
 import kotlinx.benchmark.BenchmarkTimeUnit

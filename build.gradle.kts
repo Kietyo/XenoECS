@@ -1,12 +1,30 @@
 import korlibs.korge.gradle.configureAutoVersions
 
+buildscript {
+    val korgePluginVersion: String by project
+
+    repositories {
+        println("Setting up buildscript>repositories>build.gradle.kts")
+        mavenLocal()
+        mavenCentral()
+        google()
+        maven { url = uri("https://plugins.gradle.org/m2/") }
+    }
+
+    dependencies {
+        classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korgePluginVersion")
+    }
+}
+
+configureAutoVersions()
+
 
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
     id("maven-publish")
     id("org.jetbrains.kotlinx.benchmark")
-    kotlin("plugin.allopen")
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.6.0"
 }
 
 allOpen {
@@ -78,29 +96,29 @@ kotlin {
 
 
 benchmark {
-    configurations {
-        named("main") {
-            //            iterations = 10
-            //            iterationTime = 5
-            //            iterationTimeUnit = "sec"
-            outputTimeUnit = "ms"
-            exclude("AllocationBenchmark")
-        }
-//        main { // main configuration is created automatically, but you can change its defaults
+//    configurations {
+//        named("main") {
+//            //            iterations = 10
+//            //            iterationTime = 5
+//            //            iterationTimeUnit = "sec"
+//            outputTimeUnit = "ms"
 //            exclude("AllocationBenchmark")
-//            warmups = 20 // number of warmup iterations
-//            iterations = 10 // number of iterations
-//            iterationTime = 3 // time in seconds per iteration
 //        }
-        ////        smoke {
-        ////            warmups = 5 // number of warmup iterations
-        ////            iterations = 3 // number of iterations
-        ////            iterationTime = 500 // time in seconds per iteration
-        ////            iterationTimeUnit = "ms" // time unit for iterationTime, default is seconds
-        ////        }
-//        this@benchmark.exclude("AllocationBenchmark")
-        //        exclude("AllocationBenchmark")
-    }
+////        main { // main configuration is created automatically, but you can change its defaults
+////            exclude("AllocationBenchmark")
+////            warmups = 20 // number of warmup iterations
+////            iterations = 10 // number of iterations
+////            iterationTime = 3 // time in seconds per iteration
+////        }
+//        ////        smoke {
+//        ////            warmups = 5 // number of warmup iterations
+//        ////            iterations = 3 // number of iterations
+//        ////            iterationTime = 500 // time in seconds per iteration
+//        ////            iterationTimeUnit = "ms" // time unit for iterationTime, default is seconds
+//        ////        }
+////        this@benchmark.exclude("AllocationBenchmark")
+//        //        exclude("AllocationBenchmark")
+//    }
     targets {
         //        register("main")
         register("jvm")
@@ -108,7 +126,6 @@ benchmark {
     }
 }
 
-configureAutoVersions()
 //
 //repositories {
 //    mavenCentral()
