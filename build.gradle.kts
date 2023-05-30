@@ -125,8 +125,3 @@ benchmark {
         //        register("jsIr")
     }
 }
-
-//
-//repositories {
-//    mavenCentral()
-//}
