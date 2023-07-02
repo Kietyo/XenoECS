@@ -10,11 +10,11 @@ pluginManagement {
     }
 }
 
-plugins {
-    id("com.soywiz.kproject.settings") version "0.3.1"
-}
+//plugins {
+//    id("com.soywiz.kproject.settings") version "0.3.1"
+//}
 
 rootProject.name = "XenoECS"
 
-//include("ktruth")
-//project(":ktruth").projectDir = file("..\\ktruth")
+include("ktruth")
+project(":ktruth").projectDir = file("..\\ktruth")

@@ -1,4 +1,4 @@
-import korlibs.korge.gradle.configureAutoVersions
+//import korlibs.korge.gradle.configureAutoVersions
 
 //buildscript {
 //    val korgePluginVersion: String by project
