@@ -17,4 +17,4 @@ pluginManagement {
 rootProject.name = "XenoECS"
 
 include("ktruth")
-project(":ktruth").projectDir = file("..\\ktruth")
+//project(":ktruth").projectDir = file("..\\ktruth")

@@ -1,0 +1,3 @@
+[submodule "ktruth"]
+	path = ktruth
+	url = https://github.com/Kietyo/ktruth.git
