@@ -17,13 +17,6 @@ class ComponentEntityContainer<T : Any>(
         val entityListeners = entityIdToListenersMap.getOrElse(entityId) {
             emptyList()
         }
-        if (previousComponent == null) {
-            listeners.forEach { it.onAdd(entityId, component) }
-            entityListeners.forEach { it.onAdd(component) }
-        } else {
-            listeners.forEach { it.onReplace(entityId, previousComponent, component) }
-            entityListeners.forEach { it.onReplace(previousComponent, component) }
-        }
         listeners.forEach {
             it.onAddOrReplace(entityId, previousComponent, component)
         }
