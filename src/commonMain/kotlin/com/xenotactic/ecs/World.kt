@@ -4,7 +4,6 @@ import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 class World {
-
     var injections = Injections()
 
     private val entityIdService = EntityIdService()
