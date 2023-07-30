@@ -17,7 +17,7 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entityId: EntityId, new: TestComponent) {
+            override fun onAddOrReplace(entityId: EntityId, old: TestComponent?, new: TestComponent) {
                 onAddTriggered = true
             }
 
@@ -40,11 +40,10 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entityId: EntityId, new: TestComponent) {
+            override fun onAddOrReplace(entityId: EntityId, old: TestComponent?, new: TestComponent) {
                 println("Added component!: $new")
                 onAddTriggered = true
             }
-
         })
 
         assertFalse(onAddTriggered)
@@ -63,7 +62,7 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entityId: EntityId, new: TestComponent) {
+            override fun onAddOrReplace(entityId: EntityId, old: TestComponent?, new: TestComponent) {
                 println("Added component!: $new")
                 onAddTriggered = true
             }
@@ -93,11 +92,10 @@ internal class ComponentListenerTest {
         var onAddTriggered = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entityId: EntityId, new: TestComponent) {
+            override fun onAddOrReplace(entityId: EntityId, old: TestComponent?, new: TestComponent) {
                 println("Added component!: $new")
                 onAddTriggered = true
             }
-
         })
 
         assertFalse(onAddTriggered)

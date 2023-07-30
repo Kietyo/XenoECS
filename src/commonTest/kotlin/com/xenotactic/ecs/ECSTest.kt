@@ -186,13 +186,13 @@ internal class ECSTest {
     fun removeEntityWithComponentsFromWorld() {
         val world = World()
 
-        var onAddCalled = false
+        var onAddOrReplaceCalled = false
         var onRemoveCalled = false
         var onExistingCalled = false
 
         world.addComponentListener(object : ComponentListener<TestComponent> {
-            override fun onAdd(entityId: EntityId, new: TestComponent) {
-                onAddCalled = true
+            override fun onAddOrReplace(entityId: EntityId, old: TestComponent?, new: TestComponent) {
+                onAddOrReplaceCalled = true
             }
 
             override fun onRemove(entityId: EntityId, component: TestComponent) {
@@ -211,7 +211,7 @@ internal class ECSTest {
             addComponentOrThrow(TestComponent("blah"))
         }
 
-        assertTrue(onAddCalled)
+        assertTrue(onAddOrReplaceCalled)
         assertFalse(onRemoveCalled)
         assertFalse(onExistingCalled)
         assertTrue(world.containsEntity(entity))
