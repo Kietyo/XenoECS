@@ -14,6 +14,8 @@ pluginManagement {
 //    id("com.soywiz.kproject.settings") version "0.3.1"
 //}
 
+//kproject("./deps")
+
 rootProject.name = "XenoECS"
 
 include("ktruth")
