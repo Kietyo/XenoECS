@@ -1,9 +1,6 @@
 package com.xenotactic.ecs
 
 interface ComponentListener<T> {
-    fun onAdd(entityId: EntityId, new: T) = Unit
-    fun onReplace(entityId: EntityId, old: T, new: T) = Unit
-
     // Listener for when a component gets added to the entity.
     fun onAddOrReplace(entityId: EntityId, old: T?, new: T) = Unit
 
