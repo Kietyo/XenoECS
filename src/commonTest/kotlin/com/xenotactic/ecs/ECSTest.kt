@@ -243,11 +243,11 @@ internal class ECSTest {
             })
         }
 
-        val e1 = world.addEntity() {
+        val e1 = world.addEntity {
             addComponentOrThrow(TestComponent("entity1"))
             addComponentOrThrow(ObjectComponent)
         }
-        val e2 = world.addEntity() {
+        val e2 = world.addEntity {
             addComponentOrThrow(TestComponent("entity2"))
             addComponentOrThrow(ObjectComponent)
         }

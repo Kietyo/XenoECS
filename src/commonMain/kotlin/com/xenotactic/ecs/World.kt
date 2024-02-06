@@ -1,4 +1,4 @@
-package com.xenotactic.ecs;
+package com.xenotactic.ecs
 
 import kotlin.reflect.KClass
 import kotlin.time.Duration
