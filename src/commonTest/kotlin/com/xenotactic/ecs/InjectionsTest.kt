@@ -17,7 +17,7 @@ internal class InjectionsTest {
     fun getSingleton() {
         val injections = Injections()
         val comp = TestComponent("blah")
-        injections.setSingletonOrThrow(comp)
+        injections.setSingletonOrThrow<Any>(comp)
 
         val ret: TestComponent = injections.getSingleton<TestComponent>()
         assertEquals(ret, comp)
@@ -27,9 +27,9 @@ internal class InjectionsTest {
     fun setSingletonTwiceCausesError() {
         val injections = Injections()
         val comp = TestComponent("blah")
-        injections.setSingletonOrThrow(comp)
+        injections.setSingletonOrThrow<Any>(comp)
         assertFails {
-            injections.setSingletonOrThrow(comp)
+            injections.setSingletonOrThrow<Any>(comp)
         }
     }
 }

@@ -1,9 +1,9 @@
-package com.xenotactic.ecs;
+package com.xenotactic.ecs
 
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 
-class World {
+class World : IWorld {
     var injections = Injections()
 
     private val entityIdService = EntityIdService()
@@ -66,7 +66,7 @@ class World {
         }
     }
 
-    fun containsEntity(entityId: EntityId): Boolean {
+    override fun containsEntity(entityId: EntityId): Boolean {
         return entities.contains(entityId)
     }
 
@@ -153,7 +153,7 @@ class World {
         return componentService.getOrPutContainer(kClass) as ComponentEntityContainer<T>
     }
 
-    operator fun <T : Any> get(entityId: EntityId, kClass: KClass<T>): T {
+    override operator fun <T : Any> get(entityId: EntityId, kClass: KClass<T>): T {
         if (!containsEntity(entityId)) {
             throw ECSEntityDoesNotExist {
                 "Entity $entityId does not exist."
@@ -162,7 +162,7 @@ class World {
         return getComponentContainer(kClass).getComponent(entityId)
     }
 
-    fun <T : Any> getOrNull(entityId: EntityId, kClass: KClass<T>): T? {
+    override fun <T : Any> getOrNull(entityId: EntityId, kClass: KClass<T>): T? {
         if (!containsEntity(entityId)) {
             throw ECSEntityDoesNotExist {
                 "Entity $entityId does not exist."
@@ -219,7 +219,7 @@ class World {
     }
 
     // Returns the set of entities matching the configuration.
-    fun getEntities(
+    override fun getEntities(
         familyConfiguration: FamilyConfiguration
     ): Set<EntityId> {
         return entities.filter {
@@ -227,9 +227,9 @@ class World {
         }.toSet()
     }
 
-    fun getStatefulEntities() = entities.map { getStatefulEntitySnapshot(it) }
+    override fun getStatefulEntities() = entities.map { getStatefulEntitySnapshot(it) }
 
-    fun getStatefulEntitySnapshots(
+    override fun getStatefulEntitySnapshots(
         familyConfiguration: FamilyConfiguration
     ): List<StatefulEntity> {
         return entities.filter {
@@ -239,22 +239,22 @@ class World {
         }
     }
 
-    fun getStatefulEntitySnapshot(
+    override fun getStatefulEntitySnapshot(
         entityId: EntityId
     ): StatefulEntity {
         return componentService.getStatefulEntitySnapshot(entityId)
     }
 
-    fun getFirstStatefulEntityMatching(familyConfiguration: FamilyConfiguration): StatefulEntity {
+    override fun getFirstStatefulEntityMatching(familyConfiguration: FamilyConfiguration): StatefulEntity {
         val entityId = entities.first {
             familyService.matchesFamilyConfiguration(it, familyConfiguration)
         }
         return getStatefulEntitySnapshot(entityId)
     }
 
-    fun getStagingEntities() = entities.map { getStagingEntity(it) }
+    override fun getStagingEntities() = entities.map { getStagingEntity(it) }
 
-    fun getStagingEntity(
+    override fun getStagingEntity(
         entityId: EntityId
     ): StagingEntity {
         return componentService.getStagingEntity(entityId)

@@ -85,7 +85,7 @@ internal class ComponentListenerTest {
     fun addIfNotExistsForEntity_doesNotTriggerComponentListenerIfExists() {
         val world = World()
 
-        val entity = world.addEntity() {
+        val entity = world.addEntity {
             addOrReplaceComponent(TestComponent("test"))
         }
 
@@ -111,7 +111,7 @@ internal class ComponentListenerTest {
     fun triggersOnExistForComponentListener() {
         val world = World()
 
-        val entity = world.addEntity() {
+        val entity = world.addEntity {
             addOrReplaceComponent(TestComponent("test"))
         }
 
