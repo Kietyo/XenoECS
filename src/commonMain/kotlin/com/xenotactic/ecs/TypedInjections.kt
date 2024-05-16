@@ -8,7 +8,7 @@ class TypedInjections<T: Any> {
     /**
      * Sets singleton or throws a SingletonInjectionAlreadyExistsException if it already exists.
      */
-    fun <U> setSingletonOrThrow(obj: T) {
+    fun setSingletonOrThrow(obj: T) {
         val klass = obj::class
         if (singletonComponents.containsKey(klass)) {
             throw SingletonInjectionAlreadyExistsException {

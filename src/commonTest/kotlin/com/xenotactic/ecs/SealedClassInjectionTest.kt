@@ -18,9 +18,9 @@ internal class SealedClassInjectionTest {
         val injections = TypedInjections<State>()
 
         val stringState = SealedClassState.StringState("test")
-        injections.setSingletonOrThrow<Any>(stringState)
+        injections.setSingletonOrThrow(stringState)
         val intState = SealedClassState.IntState(123)
-        injections.setSingletonOrThrow<Any>(intState)
+        injections.setSingletonOrThrow(intState)
 
         assertEquals(stringState, injections.getSingleton<SealedClassState.StringState>())
         assertEquals(intState, injections.getSingleton<SealedClassState.IntState>())
@@ -36,7 +36,7 @@ internal class SealedClassInjectionTest {
         val injections = TypedInjections<State>()
 
         val intState = SealedClassState.IntState(123) as SealedClassState
-        injections.setSingletonOrThrow<SealedClassState>(intState)
+        injections.setSingletonOrThrow(intState)
 
         val thrown = assertFails {
             injections.getSingleton<SealedClassState>()

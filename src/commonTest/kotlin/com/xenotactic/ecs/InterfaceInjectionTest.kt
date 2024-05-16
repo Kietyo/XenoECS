@@ -19,8 +19,8 @@ internal class InterfaceInjectionTest {
         val state1 = TestState1(1)
         val state2 = TestState2("blah")
 
-        injection.setSingletonOrThrow<Any>(state1)
-        injection.setSingletonOrThrow<Any>(state2)
+        injection.setSingletonOrThrow(state1)
+        injection.setSingletonOrThrow(state2)
 
         assertEquals(state1, injection.getSingleton<TestState1>())
         assertEquals(state2, injection.getSingleton<TestState2>())
@@ -32,7 +32,7 @@ internal class InterfaceInjectionTest {
 
         val state1: TestStateI = TestState1(1)
 
-        injection.setSingletonOrThrow<Any>(state1)
+        injection.setSingletonOrThrow(state1)
 
         val thrown = assertFails {
             injection.getSingleton<TestStateI>()
@@ -48,8 +48,8 @@ internal class InterfaceInjectionTest {
         val state1 = TestState1(1)
         val state2 = TestState2("blah")
 
-        injection.setSingletonOrThrow<Any>(state1)
-        injection.setSingletonOrThrow<Any>(state2)
+        injection.setSingletonOrThrow(state1)
+        injection.setSingletonOrThrow(state2)
 
         assertEquals(state1, injection.getSingleton<TestState1>())
         assertEquals(state2, injection.getSingleton<TestState2>())
