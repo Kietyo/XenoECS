@@ -16,9 +16,11 @@ interface IWorld {
     fun getStatefulEntitySnapshot(
         entityId: EntityId
     ): StatefulEntity
+    fun getFirstStatefulEntityMatchingOrNull(familyConfiguration: FamilyConfiguration): StatefulEntity?
     fun getFirstStatefulEntityMatching(familyConfiguration: FamilyConfiguration): StatefulEntity
     fun getStagingEntities(): List<StagingEntity>
     fun getStagingEntity(
         entityId: EntityId
     ): StagingEntity
+
 }

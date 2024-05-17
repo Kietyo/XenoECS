@@ -245,11 +245,17 @@ class World : IWorld {
         return componentService.getStatefulEntitySnapshot(entityId)
     }
 
-    override fun getFirstStatefulEntityMatching(familyConfiguration: FamilyConfiguration): StatefulEntity {
-        val entityId = entities.first {
+    override fun getFirstStatefulEntityMatchingOrNull(familyConfiguration: FamilyConfiguration): StatefulEntity? {
+        val entityId = entities.firstOrNull {
             familyService.matchesFamilyConfiguration(it, familyConfiguration)
         }
-        return getStatefulEntitySnapshot(entityId)
+        return entityId?.let {
+            getStatefulEntitySnapshot(it)
+        }
+    }
+
+    override fun getFirstStatefulEntityMatching(familyConfiguration: FamilyConfiguration): StatefulEntity {
+        return getFirstStatefulEntityMatchingOrNull(familyConfiguration)!!
     }
 
     override fun getStagingEntities() = entities.map { getStagingEntity(it) }
