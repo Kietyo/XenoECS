@@ -7,7 +7,7 @@ import kotlin.reflect.KClass
  *
  * It can be used as input into a world to insert the "entity" into the world.
  */
-data class StagingEntity(
+open class StagingEntity(
     override val componentMap: MutableMap<KClass<out Any>, Any> = mutableMapOf()
 ) : AbstractEntity() {
     constructor(block: StagingEntity.() -> Unit) : this() {

@@ -7,7 +7,7 @@ interface IEntity {
 }
 
 abstract class AbstractEntity : IEntity {
-    protected abstract val componentMap: Map<KClass<out Any>, Any>
+    abstract val componentMap: Map<KClass<out Any>, Any>
     val numComponents get() = componentMap.size
     val allComponents get() = componentMap.values
     inline fun <reified T: Any> containsComponentType(): Boolean {

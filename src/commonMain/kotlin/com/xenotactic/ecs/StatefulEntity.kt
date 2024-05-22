@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * Note though that the components are references to the actual entity component
  * references. So any modifications to them will be reflected to the actual entity.
  */
-data class StatefulEntity private constructor(
+open class StatefulEntity(
     val entityId: EntityId,
     override val componentMap: Map<KClass<out Any>, Any>
 ) : AbstractEntity() {
