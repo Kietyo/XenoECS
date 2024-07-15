@@ -24,5 +24,16 @@ abstract class AbstractEntity : IEntity {
     override operator fun <T : Any> get(klass: KClass<T>): T {
         return componentMap[klass]!! as T
     }
+
+    override fun toString(): String {
+        val sb = StringBuilder()
+        sb.appendLine("Entity (numComponents=$numComponents):")
+        componentMap.entries.sortedBy {
+            it.key.simpleName
+        }.forEach {
+            sb.appendLine("${it.key}: ${it.value}")
+        }
+        return sb.toString()
+    }
 }
 
